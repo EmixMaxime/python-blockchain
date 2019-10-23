@@ -3,6 +3,7 @@ from Crypto.Cipher import PKCS1_OAEP
 from Crypto.Signature import PKCS1_v1_5
 from Crypto import Random
 from base64 import b64encode, b64decode
+import hashlib
 
 
 class Wallet:
@@ -12,12 +13,16 @@ class Wallet:
 
     def __init__(self):
         try:
-            public_key, private_key = Wallet._import_keys()
+            public_key, private_key, str_public_key = Wallet._import_keys()
         except FileNotFoundError:
+            # to handle!
             public_key, private_key = Wallet.generate_keys()
 
         self.public_key = public_key
         self.private_key = private_key
+
+        self.address = hashlib.sha256(
+            str_public_key.encode('utf-8')).hexdigest()
 
     @staticmethod
     def generate_keys():
@@ -59,9 +64,11 @@ class Wallet:
         Importing keys from files, converting it into the RsaKey object 
         """
         private_key = RSA.import_key(open('./keys/private.pem', 'r').read())
-        public_key = RSA.import_key(open('./keys/public.pem', 'r').read())
 
-        return public_key, private_key
+        str_public_key = open('./keys/public.pem', 'r').read()
+        public_key = RSA.import_key(str_public_key)
+
+        return public_key, private_key, str_public_key
 
     def crypt(self, message):
         # Instantiating PKCS1_OAEP object with the public key for encryption
