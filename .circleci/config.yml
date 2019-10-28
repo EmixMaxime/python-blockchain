@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: ~/circleci-demo-python
     docker:
-      - image: circleci/python:3.7.4  # primary container for the build job
+      - image: circleci/python:3.6.4  # primary container for the build job
     steps:
       - checkout  # checkout source code to working directory
       - run:
