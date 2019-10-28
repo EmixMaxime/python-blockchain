@@ -4,6 +4,7 @@ from Crypto.Signature import PKCS1_v1_5
 from Crypto import Random
 from base64 import b64encode, b64decode
 import hashlib
+from Crypto.Hash import SHA256
 
 
 class Wallet:
@@ -61,7 +62,7 @@ class Wallet:
     @staticmethod
     def _import_keys():
         """
-        Importing keys from files, converting it into the RsaKey object 
+        Importing keys from files, converting it into the RsaKey object
         """
         private_key = RSA.import_key(open('./keys/private.pem', 'r').read())
 
@@ -70,14 +71,22 @@ class Wallet:
 
         return public_key, private_key, str_public_key
 
-    def crypt(self, message):
+    def encrypt(self, message):
         # Instantiating PKCS1_OAEP object with the public key for encryption
-        cipher = PKCS1_OAEP.new(key=self.public_key)
-        cipher_text = cipher.encrypt(message)
-
-        return cipher_text
+        cipher = PKCS1_OAEP.new(self.public_key)
+        return cipher.encrypt(message)
 
     def decrypt(self, encrypted_message):
         # Instantiating PKCS1_OAEP object with the private key for decryption
         decrypt = PKCS1_OAEP.new(key=self.private_key)
         return decrypt.decrypt(encrypted_message)
+
+    def sign(self, bytes):
+        signer = PKCS1_v1_5.new(self.private_key)
+        digest = SHA256.new(bytes)
+        return signer.sign(digest)
+
+    def verify(self, message, signature, pub_key):
+        signer = PKCS1_v1_5.new(pub_key)
+        digest = SHA256.new(message)
+        return signer.verify(digest, signature)
