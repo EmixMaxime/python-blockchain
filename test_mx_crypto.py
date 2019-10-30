@@ -1,14 +1,7 @@
 from base64 import b64encode, b64decode
 from mx_crypto import MxCrypto
-from wallet import Wallet
 
-w = Wallet()
-
-public_key = w.public_key
-private_key = w.private_key
-
-print(public_key)
-print(private_key)
+public_key, private_key = MxCrypto.generate_keys(1024)
 
 
 def test_decrypt():
@@ -20,7 +13,7 @@ def test_decrypt():
 
 
 def test_sign():
-    bytes = b"Hello world!"
+    bytes = "Hello world!"
 
     signature = MxCrypto.sign(private_key, bytes)
     verify = MxCrypto.verify(public_key, bytes, signature)

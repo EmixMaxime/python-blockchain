@@ -20,6 +20,9 @@ class MxCrypto:
 
     @staticmethod
     def sign(private_key, bytes):
+        if isinstance(bytes, str):
+            bytes = bytes.encode("utf8")
+
         signer = PKCS1_v1_5.new(private_key)
         digest = SHA256.new(bytes)
         return signer.sign(digest)
@@ -30,6 +33,10 @@ class MxCrypto:
         Check that the provided signature corresponds to transaction
         signed by the public key (sender_pubkey)
         """
+
+        if isinstance(message, str):
+            message = message.encode("utf8")
+
         signer = PKCS1_v1_5.new(pub_key)
         digest = SHA256.new(message)
         return signer.verify(digest, signature)
