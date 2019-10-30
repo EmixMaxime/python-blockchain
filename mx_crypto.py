@@ -8,6 +8,16 @@ from Crypto.Hash import SHA256
 
 
 class MxCrypto:
+
+    @staticmethod
+    def generate_keys(key_length=4096):
+        assert key_length in [1024, 2048, 4096]
+
+        private_key = RSA.generate(key_length)
+        public_key = private_key.publickey()
+
+        return public_key, private_key
+
     @staticmethod
     def sign(private_key, bytes):
         signer = PKCS1_v1_5.new(private_key)
