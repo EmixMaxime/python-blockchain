@@ -2,14 +2,17 @@ import json
 from time import time
 import hashlib
 
+MINING_DIFFICULTY = 2
 
-class Block:
-    def __init__(self, transactions, index, previous_hash):
+
+class Block(object):
+
+    def __init__(self, nonce, transactions, index, previous_hash):
         self.index = index
-        self.proof = None
+        self.nonce = nonce
         self.transactions = transactions
         self.timestamp = time()
-        self.previous_hash = None
+        self.previous_hash = previous_hash
 
     @staticmethod
     def hash(block):
@@ -18,14 +21,18 @@ class Block:
         :param block: Block
         """
 
+        if not isinstance(block, Block):
+            raise ValueError(
+                'block should be a Block instance but its .', type(block))
+
         # We must make sure that the Dictionary is Ordered, or we'll have inconsistent hashes
-        block_string = json.dumps(block, sort_keys=True).encode()
+        block_string = json.dumps(block.__dict__, sort_keys=True).encode()
 
         # @TODO: algorithm of hash as class parameter.
         return hashlib.sha256(block_string).hexdigest()
 
     @staticmethod
-    def valid_proof(last_proof, last_hash, proof):
+    def valid_proof(last_proof, last_hash, nonce, difficulty=MINING_DIFFICULTY):
         """
         Validates the Proof of work
         :param last_proof: <int> Previous Proof
@@ -34,10 +41,10 @@ class Block:
         :return: <bool> True if correct, False if not.
         """
 
-        guess = f'{last_proof}{proof}{last_hash}'.encode()
+        guess = f'{last_proof}{nonce}{last_hash}'.encode()
 
         guess_hash = hashlib.sha256(guess).hexdigest()
-        return guess_hash[:4] == "0000"
+        return guess_hash[:difficulty] == '0'*difficulty
 
     @staticmethod
     def proof_of_work(last_block):
@@ -50,11 +57,11 @@ class Block:
         :return: <int>
         """
 
-        last_proof = last_block['proof']
+        last_nonce = last_block.nonce
         last_hash = Block.hash(last_block)
 
-        proof = 0
-        while Block.valid_proof(last_proof, last_hash, proof) is False:
-            proof += 1
+        nonce = 0
+        while Block.valid_proof(last_nonce, last_hash, nonce) is False:
+            nonce += 1
 
-        return proof
+        return nonce
