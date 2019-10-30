@@ -3,6 +3,8 @@ from mx_crypto import MxCrypto
 
 public_key, private_key = MxCrypto.generate_keys(1024)
 
+attack_public_key, attack_private_key = MxCrypto.generate_keys(1024)
+
 
 def test_decrypt():
     msg = b"hello world!"
@@ -13,27 +15,17 @@ def test_decrypt():
 
 
 def test_sign():
-    bytes = "Hello world!"
+    msg = "Hello world!"
 
-    signature = MxCrypto.sign(private_key, bytes)
-    verify = MxCrypto.verify(public_key, bytes, signature)
+    signature = MxCrypto.sign(private_key, msg)
+    verify = MxCrypto.verify(public_key, msg, signature)
 
-    altered_bytes = b"Hello woorld!"
-    altered_verify = MxCrypto.verify(public_key, altered_bytes, signature)
+    altered_msg = b"Hello woorld!"
+    altered_verify = MxCrypto.verify(public_key, altered_msg, signature)
+
+    # I verify with another pub_key (pub_key doesn't correspond to priv_key that have created this signature).
+    fake_verify = MxCrypto.verify(attack_public_key, msg, signature)
 
     assert verify == True
     assert altered_verify == False
-
-
-# msg1_str = "Hello Tony, I am Jarvis!"
-# msg1 = b"Hello Tony, I am Jarvis!"
-# msg2 = b"Hello Toni, I am Jarvis!"
-
-# encrypted = b64encode(w.encrypt(msg1))
-# decrypted = w.decrypt(b64decode(encrypted))
-
-# print(decrypted)
-# print(w.sign(msg1_str.encode('utf-8')))
-# signature = b64encode()
-# verify = w.verify(msg1, b64decode(signature), w.public_key)
-# print(verify)
+    assert fake_verify == False
