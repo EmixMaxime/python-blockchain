@@ -6,6 +6,7 @@ from base64 import b64encode, b64decode
 import hashlib
 from Crypto.Hash import SHA256
 from mx_crypto import MxCrypto
+from transaction import Transaction
 
 
 class Wallet:
@@ -13,17 +14,22 @@ class Wallet:
     Manage my priv/pub key.
     """
 
-    def __init__(self):
-        try:
-            public_key, private_key, str_public_key = Wallet._import_keys()
-        except FileNotFoundError:
-            # to handle!
-            public_key, private_key = MxCrypto.generate_keys()
+    def __init__(self, key_length=4096, regenerate=False):
+        if regenerate is True:
+            public_key, private_key = MxCrypto.generate_keys(key_length)
+        else:
+            try:
+                public_key, private_key = Wallet._import_keys()
+            except FileNotFoundError:
+                # to handle!
+                public_key, private_key = MxCrypto.generate_keys(key_length)
 
-            Wallet._save_key(public_key, private_key)
+                Wallet._save_key(public_key, private_key)
 
         self.public_key = public_key
         self.private_key = private_key
+
+        self.address = self.public_key.export_key().decode()
 
         # self.address = hashlib.sha256(
         #     str_public_key.encode('utf-8')).hexdigest()
@@ -50,14 +56,14 @@ class Wallet:
         str_public_key = open('./keys/public.pem', 'r').read()
         public_key = RSA.import_key(str_public_key)
 
-        return public_key, private_key, str_public_key
+        return public_key, private_key
 
     def sign_transaction(self, transaction):
         """
         Sign transaction with private key
         """
 
-        if not isinstance(transaction):
+        if not isinstance(transaction, Transaction):
             raise ValueError('transaction should be Transation instance.')
 
-        return Wallet.sign(str(transaction.to_dict()), self.private_key)
+        return MxCrypto.sign(self.private_key, transaction.toJSON())
