@@ -1,1 +1,8 @@
-blockchain-python
+# Blockchain python
+Work in progress. This is a toy blockchain to learn.
+
+## Requirements 
+- python 3.7+
+
+Because: "Prior to Python 3.7, dict was not guaranteed to be ordered, so inputs and outputs were typically scrambled unless collections.OrderedDict was specifically requested. Starting with Python 3.7, the regular dict became order preserving, so it is no longer necessary to specify collections.OrderedDict for JSON generation and parsing.". Source: 
+https://docs.python.org/fr/3/library/json.html
