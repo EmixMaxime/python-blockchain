@@ -20,6 +20,9 @@ class MxCrypto:
 
     @staticmethod
     def sign(private_key, bytes):
+
+        # encode str into a bytearray to be able to hash it.
+        # class <str> can't be send to C program, bytearray can.
         if isinstance(bytes, str):
             bytes = bytes.encode("utf8")
 
