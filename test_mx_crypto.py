@@ -1,25 +1,32 @@
 from base64 import b64encode, b64decode
+from mx_crypto import MxCrypto
 from wallet import Wallet
 
 w = Wallet()
 
+public_key = w.public_key
+private_key = w.private_key
+
+print(public_key)
+print(private_key)
+
 
 def test_decrypt():
     msg = b"hello world!"
-    crypted = w.encrypt(b"hello world!")
-    original = w.decrypt(crypted)
+    encrypted = MxCrypto.encrypt(public_key, msg)
+    original = MxCrypto.decrypt(private_key, encrypted)
 
     assert msg == original
 
 
 def test_sign():
     bytes = b"Hello world!"
-    signature = w.sign(bytes)
-    verify = w.verify(message=bytes, signature=signature, pub_key=w.public_key)
+
+    signature = MxCrypto.sign(private_key, bytes)
+    verify = MxCrypto.verify(public_key, bytes, signature)
 
     altered_bytes = b"Hello woorld!"
-    altered_verify = w.verify(message=altered_bytes,
-                              signature=signature, pub_key=w.public_key)
+    altered_verify = MxCrypto.verify(public_key, altered_bytes, signature)
 
     assert verify == True
     assert altered_verify == False
