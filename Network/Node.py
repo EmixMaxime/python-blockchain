@@ -2,26 +2,19 @@ import socket
 from threading import Thread
 
 class Node:
-	def __init__():
-		host = host_ #Adresse du pc
-		port = 5000
-		s
+	def __init__(self, host_):
+		self.host = host_ #Adresse du pc
+		self.port = 5000
+		self.s = None
 
-	def init_node():
-		s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-		s.bind((host, port))
+	def init_node(self):
+		self.s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+		self.s.bind((self.host, self.port))
 
-	def ping(): #A deplacer
-		send("-p ", self.s, ?, ""); # ? destinataire à definir
+	def ping(self, node_to_ping): #A deplacer
+		send("-p ", self.s, node_to_ping, ""); # ? destinataire à definir
 
 
-	#def send_transation(transaction_): #A definir
-		#Methode transaction
-
-	#def send_block(block_): #A definir
-		#Methode block
-
-	def send(command_, s_, node_, message_):
-
+	def send(self, command_, s_, node_, message_):
 		server = (node_.host, node_.port) #Adresse de l'autre pc
-		s_.sendto(command_ + message_, servers)
+		self.s_.sendto(command_ + message_, servers)
