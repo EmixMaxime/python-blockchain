@@ -14,6 +14,6 @@ https://docs.python.org/fr/3/library/json.html
 	-n ask to a node his all connections
 	-an is an answer to the command n
 	-t specifi that the node will receiv a transaction
-	-b secifi that the node will receiv a block
+	-b specifi that the node will receiv a block
 	-p it's a commande to know how many node are in the same network
 	-ap is a answer to the command p
