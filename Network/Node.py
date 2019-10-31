@@ -2,14 +2,14 @@ import socket
 from threading import Thread
 
 class Node:
-	def __init__(host_):
-		host = host_ #AdressePc
+	def __init__():
+		host = host_ #Adresse du pc
 		port = 5000
 		s
 
-	def init_node(node_):
+	def init_node():
 		s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-		s.bind((node_.host, node_.port))
+		s.bind((host, port))
 
 	def ping(): #A deplacer
 		send("-p ", self.s, ?, ""); # ? destinataire à definir
