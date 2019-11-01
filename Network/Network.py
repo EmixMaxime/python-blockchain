@@ -57,7 +57,7 @@ class Network:
 
 			elif myData[:3] == "-ac":
 				#Manque la fonction de Max
-				some = None #Fonction pour traiter la chain
+				some = None 
 
 			elif myData[:3] == "-an":
 				#Manque la fonction de Moi
