@@ -4,7 +4,7 @@ from Node import Node
 
 class Network:
   
-	def __init__(Node_):  
+	def __init__(self, Node_):  
 		self.node = node_
 		self.nodes = []
 		self.blockchain = None
