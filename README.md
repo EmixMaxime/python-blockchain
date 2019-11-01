@@ -10,11 +10,10 @@ https://docs.python.org/fr/3/library/json.html
 ## Protocol to comunicate
 
 ### Command
-	-c ask the blockchain to a node
-	-ac is an answer to the command -c
-	-n ask to a node his all connections
-	-an is an answer to the command -n
-	-t specify that the node will receiv a transaction
-	-b specify that the node will receiv a block
-	-p it's a commande to know how many node are in the same network
-	-ap is a answer to the command -p
+	"-c " ask the blockchain to a node
+	"-ac" is an answer to the command -c
+	"-n " ask to a node his all connections
+	"-an" is an answer to the command -n or -p
+	"-t " specify that the node will receiv a transaction
+	"-b " specify that the node will receiv a block
+	"-p " it's a commande to know all the nodes in the same network

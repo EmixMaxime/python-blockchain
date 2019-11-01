@@ -14,7 +14,6 @@ class Node:
 	def ping(self, node_to_ping): 
 		send("-p ", self.s, node_to_ping, "");
 
-
 	def send(self, command_, s_, node_, message_):
 		server = (node_.host, node_.port) #Server 
 		self.s_.sendto(command_ + message_, servers)

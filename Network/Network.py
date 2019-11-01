@@ -21,6 +21,8 @@ class Network:
 		for node in self.nodes:
 			node.send("-b ", node.s, nodes, str_transaction_)
 
+	#Une fonction pour broadcast ping
+
 	def receiv(self):
 		print("ready to receiv")
     
@@ -31,13 +33,13 @@ class Network:
 			myData = str(data)
 
 			if myData[:3] == "-c ":
-				#retourne le JSON de la chain, manque la fonction de Max
+				#Retourne le JSON de la chain, manque la fonction de Max
 				nodes.send("-ac", node.s, cureNode, None) #None le JSON
 
-			elif myData[:3] == "-n ": #Done
+			elif myData[:3] == "-n ": 
 				#Parcourir la liste de noeud et les envois à l'emmeteur
 				for i in self.nodes:
-					node.send("-an", node.s, cureNode, "") #None Le JSON
+					node.send("-an", node.s, cureNode, None) #None Le JSON des nodes
 
 			elif myData[:3] == "-t ":
 				#Reception d'une transaction, manque la fonction de Max
@@ -49,11 +51,16 @@ class Network:
 				for i in self.nodes:
 					node.send("-b ", node.s, nodes, myData[3:lenth(myData)])
 
-			elif myData[:3] == "-p ": #Done
-				#Envoie tous les nodes
-				for i in self.nodes:
-					node.send("-ap", node.s, cureNode, "")
+			elif myData[:3] == "-p ": 
+				#Repond present 
+				node.send("-an", node, cureNode, None) #None Le JSON du node
 
-			#Faire les codes retour -ac, -ap et -ac
+			elif myData[:3] == "-ac":
+				#Manque la fonction de Max
+				some = None #Fonction pour traiter la chain
+
+			elif myData[:3] == "-an":
+				#Manque la fonction de Moi
+				some = None #Fonction pour ajouter un noeud
 		
 		c.close()
