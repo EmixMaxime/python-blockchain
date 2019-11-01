@@ -4,6 +4,7 @@ from time import time
 from urllib.parse import urlparse
 from uuid import uuid4
 from collections import OrderedDict
+import jsonpickle
 
 from block import Block
 from transaction import Transaction
@@ -30,7 +31,19 @@ class Blockchain():
         self.nodes = set()
 
         # Create the genesis block
-        self.new_block(100, '1')
+        self._genesis_block()
+
+    def _genesis_block(self):
+        t1 = Transaction('@sender_address', '@recipient_address', 50)
+
+        nonce = 55
+        previous_hash = 0
+        b1 = Block(nonce, t1, 0, 0)
+
+        self.chain.append(b1)
+
+        # genesis_hash = Block.hash(b1)
+        # print('genesis_hash = ', genesis_hash)
 
     def register_node(self, node):
         """
@@ -62,7 +75,7 @@ class Blockchain():
 
         return False
 
-    def new_block(self, nonce, previous_hash):
+    def create_block(self, nonce, previous_hash):
         """
         Create a new Block in the Blockchain
         :param nonce: The nonce given by the Proof of Work algorithm
@@ -87,30 +100,31 @@ class Blockchain():
         :return: True if valid, False if not
         """
 
-        last_block = chain[0]
+        chain = jsonpickle.decode(chain)
+
+        previous_block = chain[0]
 
         current_index = 1
         lenChain = len(chain)
 
         while current_index < lenChain:
+            # Check with previous_block & current_block
             current_block = chain[current_index]
 
-            # Check with last_block & current_block
-
-            print(f'{last_block}')
-            print(f'{current_block}')
-            print("\n-----------\n")
-
             # Check that the hash of the block is correct
-            last_block_hash = Block.hash(last_block)
-            if current_block['previous_hash'] != last_block_hash:
+            previous_block_hash = Block.hash(previous_block)
+
+            if current_block.previous_hash != previous_block_hash:
+                print('current_block.previous_hash != previous_block_hash')
                 return False
 
             # Check that the Proof of Work is correct
-            if not Block.valid_proof(last_block['proof'], current_block['proof'], last_block_hash):
+            if not Block.valid_proof(previous_block.nonce, previous_block_hash, current_block.nonce):
+                print('Bad Proof of work. curr_nonce=',
+                      current_block.nonce, ' prev_nonce=', previous_block.nonce)
                 return False
 
-            last_block = current_block
+            previous_block = current_block
             current_index += 1
 
         return True
@@ -135,7 +149,7 @@ class Blockchain():
 
         # Forge the new Block by adding it to the chain
         previous_hash = Block.hash(last_block)
-        block = self.new_block(nonce, previous_hash)
+        block = self.create_block(nonce, previous_hash)
 
         response = {
             'message': "New Block Forged",

@@ -11,6 +11,7 @@ autopep8 = "*"
 flask = "*"
 pycryptodome = "*"
 pytest = "*"
+jsonpickle = "*"
 
 [requires]
 python_version = "3.7"
