@@ -6,7 +6,5 @@ jobs:
       - image: circleci/python:3.7.4  # primary container for the build job
     steps:
       - checkout  # checkout source code to working directory
-      - run:
-        command: |  # use pipenv to install dependencies
-          sudo pip install pipenv
-          pipenv install
+      - run: sudo pip install pipenv && pipenv install
+          
