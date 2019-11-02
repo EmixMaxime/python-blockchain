@@ -38,7 +38,7 @@ class Blockchain():
 
         nonce = 55
         previous_hash = 0
-        b1 = Block(nonce, t1, 0, 0)
+        b1 = Block(nonce, [t1], 0, 0)
 
         self.chain.append(b1)
 
