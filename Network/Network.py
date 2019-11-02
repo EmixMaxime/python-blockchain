@@ -15,16 +15,16 @@ class Network:
 		self.blockchain = blockchain_
 
 	def broadcast_transaction(self, str_transaction_): #Done
-		for node in self.nodes:
-			node.send("-t ", node.s, nodes, str_transaction_)
+		for nodeList in self.nodes:
+			node.send("-t ", node.s, nodeList, str_transaction_)
     
 	def broadcast_block(self, str_block_): #Done
-		for node in self.nodes:
-			node.send("-b ", node.s, nodes, str_block_)
+		for nodeList in self.nodes:
+			node.send("-b ", node.s, nodeList, str_block_)
 
 	def broadcast_ask_chain(self): #Done
-		for node in self.nodes:
-			node.send("-c ", node.s, nodes, "")
+		for nodeList in self.nodes:
+			node.send("-c ", node.s, nodeList, "")
 
 	#Une fonction pour broadcast ping 
 
@@ -38,21 +38,21 @@ class Network:
 			myData = str(data)
 
 			if myData[:3] == "-c ": #Done
-				#Retourne le JSON de la chain, manque la fonction de Max
+				#Retourne le JSON de la chaine
 				nodes.send("-ac", node.s, cureNode, self.blockchain.chain_for_network)
 
 			elif myData[:3] == "-n ": #Done
 				#Parcourir la liste de noeud et les envois a l'emmeteur
-				for i in self.nodes:
-					nodeToSend = jsonpickle.encode(nodes)
+				for nodeList in self.nodes:
+					nodeToSend = jsonpickle.encode(nodeList)
 					node.send("-an", node.s, cureNode, nodeToSend)
 
 			elif myData[:3] == "-t ": #Done
-				#Reception d'une transaction, manque la fonction de Max
+				#Reception d'une transaction
 				self.blockchain.submit_block(myData[3:length(myData)])
 
 			elif myData[:3] == "-b ": #Done
-				#Reception d'un block, manque la fonction de max
+				#Reception d'un block
 				self.blockchain.submit_transaction(myData[3:length(myData)])
 
 			elif myData[:3] == "-p ": #Done
@@ -61,11 +61,18 @@ class Network:
 				node.send("-an", node, cureNode, nodeToSend)
 
 			elif myData[:3] == "-ac": #En suspend
-				#Manque la fonction de Max
 				some = None 
 
-			elif myData[:3] == "-an":
-				#Manque la fonction de Moi
-				some = None #Fonction pour ajouter un noeud
+			elif myData[:3] == "-an": #Done
+				node = jsonpickle.decode(myData[3:length(myData)])
+
+				notFind = True
+				for nodeList in self.nodes:
+					if nodeList.host == node.host:
+						notFind = False
+
+				if notFind:
+					self.nodes.append(node)
+					notFind = False
 		
 		c.close()
