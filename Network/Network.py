@@ -1,4 +1,5 @@
 import socket
+import jsonpickle
 from threading import Thread
 from Node import Node
 
@@ -21,9 +22,11 @@ class Network:
 		for node in self.nodes:
 			node.send("-b ", node.s, nodes, str_block_)
 
-	#Une fonction pour broadcast ping
+	def broadcast_ask_chain(self): #Done
+		for node in self.nodes:
+			node.send("-c ", node.s, nodes, "")
 
-	#Fonction demande chain
+	#Une fonction pour broadcast ping 
 
 	def receiv(self):
 		print("ready to receiv")
@@ -34,30 +37,30 @@ class Network:
 
 			myData = str(data)
 
-			if myData[:3] == "-c ":
+			if myData[:3] == "-c ": #Done
 				#Retourne le JSON de la chain, manque la fonction de Max
-				nodes.send("-ac", node.s, cureNode, None) #None le JSON
+				nodes.send("-ac", node.s, cureNode, self.blockchain.chain_for_network)
 
-			elif myData[:3] == "-n ": 
-				#Parcourir la liste de noeud et les envois à l'emmeteur
+			elif myData[:3] == "-n ": #Done
+				#Parcourir la liste de noeud et les envois a l'emmeteur
 				for i in self.nodes:
-					node.send("-an", node.s, cureNode, None) #None Le JSON des nodes
+					nodeToSend = jsonpickle.encode(nodes)
+					node.send("-an", node.s, cureNode, nodeToSend)
 
-			elif myData[:3] == "-t ":
+			elif myData[:3] == "-t ": #Done
 				#Reception d'une transaction, manque la fonction de Max
-				for i in self.nodes:
-					node.send("-t ", node.s, nodes, myData[3:lenth(myData)])
+				self.blockchain.submit_block(myData[3:length(myData)])
 
-			elif myData[:3] == "-b ":
+			elif myData[:3] == "-b ": #Done
 				#Reception d'un block, manque la fonction de max
-				for i in self.nodes:
-					node.send("-b ", node.s, nodes, myData[3:lenth(myData)])
+				self.blockchain.submit_transaction(myData[3:length(myData)])
 
-			elif myData[:3] == "-p ": 
+			elif myData[:3] == "-p ": #Done
 				#Repond present 
-				node.send("-an", node, cureNode, None) #None Le JSON du node
+				nodeToSend = jsonpickle.encode(self.node)
+				node.send("-an", node, cureNode, nodeToSend)
 
-			elif myData[:3] == "-ac":
+			elif myData[:3] == "-ac": #En suspend
 				#Manque la fonction de Max
 				some = None 
 
