@@ -62,7 +62,7 @@ class Blockchain():
     def chain_for_network(self):
         return jsonpickle.encode(self.chain)
 
-    def submit_transaction(self, transaction, signature):
+    def submit_transaction(self, transaction):
         """
         Add a transaction to transactions array if the signature verified
         Return index of block that the transaction will be.
@@ -71,7 +71,7 @@ class Blockchain():
             raise ValueError(
                 'transaction parameter should be a Transaction instance.')
 
-        transaction_verification = transaction.verify_signature(signature)
+        transaction_verification = transaction.verify_signature()
 
         if transaction_verification:
             self.current_transactions.append(transaction)
