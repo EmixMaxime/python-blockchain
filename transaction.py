@@ -9,6 +9,7 @@ from base64 import b64encode, b64decode
 from Crypto.Hash import SHA256
 from mx_crypto import MxCrypto
 import json
+import jsonpickle
 
 
 class Transaction:
@@ -19,6 +20,7 @@ class Transaction:
         self.recipient_address = recipient_address
 
         self.value = value
+        self.signature = None
 
     def to_dict(self):
         return OrderedDict({'sender_address': self.sender_address,
@@ -31,10 +33,18 @@ class Transaction:
         #     'recipient_address': self.recipient_address,
         #     'value': self.value
         # }, sort_keys=True)
-        return json.dumps(self, default=lambda o: o.__dict__,
-                          sort_keys=True, indent=4)
+        return jsonpickle.encode(self)
 
-    def verify_signature(self, signature):
+    @property
+    def to_sign(self):
+        return jsonpickle.encode({'sender_address': self.sender_address,
+                                  'recipient_address': self.recipient_address,
+                                  'value': self.value}).encode()
+
+    def sign(self, wallet):
+        self.signature = wallet.sign_transaction(self.to_sign)
+
+    def verify_signature(self):
         """
         Check that the provided signature corresponds to transaction
         signed by the public key (sender_address)
@@ -42,4 +52,4 @@ class Transaction:
 
         # sender_address = string. I need RSA Object.
         pubkey = RSA.import_key(self.sender_address)
-        return MxCrypto.verify(pubkey, self.toJSON(), signature)
+        return MxCrypto.verify(pubkey, self.to_sign, self.signature)

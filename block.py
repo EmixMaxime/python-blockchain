@@ -1,8 +1,9 @@
-import json
+import jsonpickle
 from time import time
 import hashlib
 
 MINING_DIFFICULTY = 2
+HASH_GENESIS_BLOCK = "2c1000ab01910992ffdc4cbd28c78698b11c63887caaf8b02e0959e83e11a8e3"
 
 
 class Block(object):
@@ -26,22 +27,26 @@ class Block(object):
                 'block should be a Block instance but its .', type(block))
 
         # We must make sure that the Dictionary is Ordered, or we'll have inconsistent hashes
-        block_string = json.dumps(block.__dict__, sort_keys=True).encode()
+        block_string = jsonpickle.encode(
+            block).encode()
 
         # @TODO: algorithm of hash as class parameter.
         return hashlib.sha256(block_string).hexdigest()
 
     @staticmethod
-    def valid_proof(last_proof, last_hash, nonce, difficulty=MINING_DIFFICULTY):
+    def valid_proof(prev_nonce, prev_hash, nonce, difficulty=MINING_DIFFICULTY):
         """
         Validates the Proof of work
-        :param last_proof: <int> Previous Proof
+        :param prev_nonce: <int> Previous Proof
         :param proof: <int> Current Proof
-        :param last_hash: <str> The hash of the Previous Block
+        :param prev_hash: <str> The hash of the Previous Block
         :return: <bool> True if correct, False if not.
         """
 
-        guess = f'{last_proof}{nonce}{last_hash}'.encode()
+        if (prev_hash == HASH_GENESIS_BLOCK):
+            return True
+
+        guess = f'{prev_nonce}{nonce}{prev_hash}'.encode()
 
         guess_hash = hashlib.sha256(guess).hexdigest()
         return guess_hash[:difficulty] == '0'*difficulty
@@ -65,3 +70,19 @@ class Block(object):
             nonce += 1
 
         return nonce
+
+    @staticmethod
+    def valid_block(block_to_validate, previous_block):
+        previous_block_hash = Block.hash(previous_block)
+
+        if block_to_validate.previous_hash != previous_block_hash:
+            print('block_to_validate.previous_hash != previous_block_hash')
+            return False
+
+        # Check that the Proof of Work is correct
+        if not Block.valid_proof(previous_block.nonce, previous_block_hash, block_to_validate.nonce):
+            print('Bad Proof of work. curr_nonce=',
+                  block_to_validate.nonce, ' prev_nonce=', previous_block.nonce)
+            return False
+
+        return True
