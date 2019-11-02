@@ -17,11 +17,13 @@ class Network:
 		for node in self.nodes:
 			node.send("-t ", node.s, nodes, str_transaction_)
     
-	def broadcast_block(self, str_block): #Done
+	def broadcast_block(self, str_block_): #Done
 		for node in self.nodes:
-			node.send("-b ", node.s, nodes, str_transaction_)
+			node.send("-b ", node.s, nodes, str_block_)
 
 	#Une fonction pour broadcast ping
+
+	#Fonction demande chain
 
 	def receiv(self):
 		print("ready to receiv")
