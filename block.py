@@ -70,3 +70,19 @@ class Block(object):
             nonce += 1
 
         return nonce
+
+    @staticmethod
+    def valid_block(block_to_validate, previous_block):
+        previous_block_hash = Block.hash(previous_block)
+
+        if block_to_validate.previous_hash != previous_block_hash:
+            print('block_to_validate.previous_hash != previous_block_hash')
+            return False
+
+        # Check that the Proof of Work is correct
+        if not Block.valid_proof(previous_block.nonce, previous_block_hash, block_to_validate.nonce):
+            print('Bad Proof of work. curr_nonce=',
+                  block_to_validate.nonce, ' prev_nonce=', previous_block.nonce)
+            return False
+
+        return True

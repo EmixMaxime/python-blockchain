@@ -58,7 +58,11 @@ class Blockchain():
     def last_block(self):
         return self.chain[-1]
 
-    def submit_transaction(self, transaction, signature):
+    @property
+    def chain_for_network(self):
+        return jsonpickle.encode(self.chain)
+
+    def submit_transaction(self, transaction):
         """
         Add a transaction to transactions array if the signature verified
         Return index of block that the transaction will be.
@@ -67,7 +71,7 @@ class Blockchain():
             raise ValueError(
                 'transaction parameter should be a Transaction instance.')
 
-        transaction_verification = transaction.verify_signature(signature)
+        transaction_verification = transaction.verify_signature()
 
         if transaction_verification:
             self.current_transactions.append(transaction)
@@ -93,6 +97,19 @@ class Blockchain():
         self.chain.append(block)
         return block
 
+    def submit_block(self, block):
+        """
+        Add a Block in the Blockchain if the Block signature is valid.
+        """
+        # @TODO:
+        # What should I do if in this block it contains transactions that I'm currently mining? I should stop mining these transactions maybe? To see with Merkle Tree.
+        if not Block.valid_block(block, self.last_block):
+            return False
+
+        self.chain.append(block)
+
+        return True
+
     def valid_chain(self, chain):
         """
         Determine if a given blockchain is valid
@@ -111,17 +128,7 @@ class Blockchain():
             # Check with previous_block & current_block
             current_block = chain[current_index]
 
-            # Check that the hash of the block is correct
-            previous_block_hash = Block.hash(previous_block)
-
-            if current_block.previous_hash != previous_block_hash:
-                print('current_block.previous_hash != previous_block_hash')
-                return False
-
-            # Check that the Proof of Work is correct
-            if not Block.valid_proof(previous_block.nonce, previous_block_hash, current_block.nonce):
-                print('Bad Proof of work. curr_nonce=',
-                      current_block.nonce, ' prev_nonce=', previous_block.nonce)
+            if (not Block.valid_block(current_block, previous_block)):
                 return False
 
             previous_block = current_block
