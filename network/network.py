@@ -26,7 +26,9 @@ class Network:
 		for nodeList in self.nodes:
 			self.node.send("-c ", node.s, nodeList, "")
 
-	#Une fonction pour broadcast ping 
+	def broadcast_ping(self):
+		nodeBroadcast = node("255.255.255.0")
+		self.node.send("-p ", self.node.s, nodeBroadcast, "") 
 
 	def receiv(self):
 		print("ready to receiv")
@@ -39,13 +41,13 @@ class Network:
 
 			if myData[:3] == "-c ": #Done
 				#Retourne le JSON de la chaine
-				self.node.send("-ac", node.s, cureNode, self.blockchain.chain_for_network)
+				self.node.send("-ac", self.node.s, cureNode, self.blockchain.chain_for_network)
 
 			elif myData[:3] == "-n ": #Done
 				#Parcourir la liste de noeud et les envois a l'emmeteur
 				for nodeList in self.nodes:
 					nodeToSend = jsonpickle.encode(nodeList)
-					self.node.send("-an", node.s, cureNode, nodeToSend)
+					self.node.send("-an", self.node.s, cureNode, nodeToSend)
 
 			elif myData[:3] == "-t ": #Done
 				#Reception d'une transaction
@@ -58,21 +60,21 @@ class Network:
 			elif myData[:3] == "-p ": #Done
 				#Repond present 
 				nodeToSend = jsonpickle.encode(self.node)
-				self.node.send("-an", node, cureNode, nodeToSend)
+				self.node.send("-an", self.node, cureNode, nodeToSend)
 
 			elif myData[:3] == "-ac": #En suspend
 				some = None 
 
 			elif myData[:3] == "-an": #Done
-				node = jsonpickle.decode(myData[3:length(myData)])
+				nodeReceiv = jsonpickle.decode(myData[3:length(myData)])
 
 				notFind = True
 				for nodeList in self.nodes:
-					if nodeList.host == node.host:
+					if nodeList.host == nodeReceiv.host:
 						notFind = False
 
 				if notFind:
-					self.nodes.append(node)
+					self.nodes.append(nodeReceiv)
 					notFind = False
 		
 		c.close()
