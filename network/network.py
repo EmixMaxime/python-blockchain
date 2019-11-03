@@ -15,7 +15,7 @@ class Network:
         self._running = True
         self.t1 = threading.Thread(target=self.receiv)
         self.t1.start()
-        # self._broadcast_ping()
+        self._broadcast_ping()
 
     def stop(self):
         self._running = False
@@ -25,39 +25,43 @@ class Network:
 
     def broadcast_transaction(self, str_transaction_):  # Done
         for nodeList in self.nodes:
-            self.node.send("-t ", node.s, nodeList, str_transaction_)
+            self.node.send("-t ", nodeList, str_transaction_)
 
     def broadcast_block(self, str_block_):  # Done
         for nodeList in self.nodes:
-            self.node.send("-b ", node.s, nodeList, str_block_)
+            self.node.send("-b ", nodeList, str_block_)
 
     def broadcast_ask_chain(self):  # Done
         for nodeList in self.nodes:
-            self.node.send("-c ", node.s, nodeList, "")
+            self.node.send("-c ", nodeList, "")
 
     def _broadcast_ping(self):
-        nodeBroadcast = Node("192.168.1.82")
-        self.node.send("-p ", self.node.s, nodeBroadcast, "")
+        nodeBroadcast = Node("192.168.1.62")
+        self.node.send("-p ", nodeBroadcast, "ping")
 
     def receiv(self):
         print("ready to receiv")
 
         while self._running is True:
-            data, addr = self.node.s.recvfrom(1024)
-            curentNode = Node(str(addr))
+            print('bonjour')
+            data, addr = self.node.my_socket.recvfrom(1024)
+            print(data, addr)
+
+            cureNode = Node(str(addr))
 
             myData = data.decode()
 
             if myData[:3] == "-c ":  # Done
                 # Retourne le JSON de la chaine
-                self.node.send("-ac", self.node.s, cureNode,
+                self.node.send("-ac", cureNode,
                                self.blockchain.chain_for_network)
 
             elif myData[:3] == "-n ":  # Done
+                print("I received a Node")
                 # Parcourir la liste de noeud et les envois a l'emmeteur
                 for nodeList in self.nodes:
                     nodeToSend = jsonpickle.encode(nodeList)
-                    self.node.send("-an", self.node.s, cureNode, nodeToSend)
+                    self.node.send("-an", cureNode, nodeToSend)
 
             elif myData[:3] == "-t ":  # Done
                 # Reception d'une transaction
@@ -68,9 +72,10 @@ class Network:
                 self.blockchain.submit_transaction(myData[3:length(myData)])
 
             elif myData[:3] == "-p ":  # Done
+                print('ping received')
                 # Repond present
                 nodeToSend = jsonpickle.encode(self.node)
-                self.node.send("-an", self.node, cureNode, nodeToSend)
+                self.node.send("-ap", cureNode, nodeToSend)
 
             elif myData[:3] == "-ac":  # En suspend
                 some = None
