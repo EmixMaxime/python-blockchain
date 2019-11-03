@@ -1,7 +1,7 @@
 import socket
 import jsonpickle
 from threading import Thread
-from Node import Node
+from node import Node
 
 class Network:
   
@@ -16,15 +16,15 @@ class Network:
 
 	def broadcast_transaction(self, str_transaction_): #Done
 		for nodeList in self.nodes:
-			node.send("-t ", node.s, nodeList, str_transaction_)
+			self.node.send("-t ", node.s, nodeList, str_transaction_)
     
 	def broadcast_block(self, str_block_): #Done
 		for nodeList in self.nodes:
-			node.send("-b ", node.s, nodeList, str_block_)
+			self.node.send("-b ", node.s, nodeList, str_block_)
 
 	def broadcast_ask_chain(self): #Done
 		for nodeList in self.nodes:
-			node.send("-c ", node.s, nodeList, "")
+			self.node.send("-c ", node.s, nodeList, "")
 
 	#Une fonction pour broadcast ping 
 
@@ -39,13 +39,13 @@ class Network:
 
 			if myData[:3] == "-c ": #Done
 				#Retourne le JSON de la chaine
-				nodes.send("-ac", node.s, cureNode, self.blockchain.chain_for_network)
+				self.node.send("-ac", node.s, cureNode, self.blockchain.chain_for_network)
 
 			elif myData[:3] == "-n ": #Done
 				#Parcourir la liste de noeud et les envois a l'emmeteur
 				for nodeList in self.nodes:
 					nodeToSend = jsonpickle.encode(nodeList)
-					node.send("-an", node.s, cureNode, nodeToSend)
+					self.node.send("-an", node.s, cureNode, nodeToSend)
 
 			elif myData[:3] == "-t ": #Done
 				#Reception d'une transaction
@@ -58,7 +58,7 @@ class Network:
 			elif myData[:3] == "-p ": #Done
 				#Repond present 
 				nodeToSend = jsonpickle.encode(self.node)
-				node.send("-an", node, cureNode, nodeToSend)
+				self.node.send("-an", node, cureNode, nodeToSend)
 
 			elif myData[:3] == "-ac": #En suspend
 				some = None 
