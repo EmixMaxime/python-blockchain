@@ -16,14 +16,8 @@ def Main():
     t1 = Thread(target=receiv, args=("ready to receive", s))
     t1.start()
 
-    message = raw_input()
-
-    while message != "q":
-
-        t2 = Thread(target=send, args=("ready to send", s, server, message))
-        t2.start()
-
-        message = raw_input()
+    t2 = Thread(target=send, args=("ready to send", s, server, ""))
+    t2.start()
 
     t1._Thread__stop()
 
