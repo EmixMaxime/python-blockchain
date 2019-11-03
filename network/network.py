@@ -36,25 +36,22 @@ class Network:
             self.node.send("-c ", nodeList, "")
 
     def _broadcast_ping(self):
-        nodeBroadcast = Node("192.168.1.62")
-        self.node.send("-p ", nodeBroadcast, "ping")
+        nodeBroadcast = Node("192.168.1.255")
+        self.node.send("-p ", nodeBroadcast, "")
 
     def receiv(self):
         print("ready to receiv")
 
         while self._running is True:
-            print('bonjour')
             data, addr = self.node.my_socket.recvfrom(1024)
-            print(data, addr)
 
-            cureNode = Node(str(addr))
+            cureNode = Node(str(addr.decode))
 
             myData = data.decode()
 
             if myData[:3] == "-c ":  # Done
                 # Retourne le JSON de la chaine
-                self.node.send("-ac", cureNode,
-                               self.blockchain.chain_for_network)
+                self.node.send("-ac", cureNode, self.blockchain.chain_for_network)
 
             elif myData[:3] == "-n ":  # Done
                 print("I received a Node")
