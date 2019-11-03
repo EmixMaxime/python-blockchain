@@ -7,7 +7,7 @@ from network.node import Node
 class Network:
 
     def __init__(self):
-        self.node = Node()
+        self.node = Node("192.168.1.34", True)
         self.nodes = []
         self.blockchain = None
 
