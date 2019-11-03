@@ -9,7 +9,6 @@ import jsonpickle
 from block import Block
 from transaction import Transaction
 from wallet import Wallet
-from node import Node
 
 """
 Lq je reçois une transaction je dois la validera avant de l'enregister dans mon block.
@@ -44,15 +43,6 @@ class Blockchain():
 
         # genesis_hash = Block.hash(b1)
         # print('genesis_hash = ', genesis_hash)
-
-    def register_node(self, node):
-        """
-        Add a new node to the list of nodes.
-        """
-        if not isinstance(node, Node):
-            raise ValueError('node parameter should be a Node instance.')
-
-        self.nodes.add(node)
 
     @property
     def last_block(self):
