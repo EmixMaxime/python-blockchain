@@ -19,13 +19,13 @@ class Node:
         self.port = 5000
         self.s = None
 
-    def _init_node(self):
     """
     Initialize the node as myself.
     """
 
-    self.s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    self.s.bind((self.host, self.port))
+    def _init_node(self):
+        self.s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.s.bind((self.host, self.port))
 
     def ping(self, node_to_ping):
         send("-p ", self.s, node_to_ping, "")
