@@ -9,6 +9,7 @@ import jsonpickle
 from block import Block
 from transaction import Transaction
 from wallet import Wallet
+from network.network import Network
 
 """
 Lq je reçois une transaction je dois la validera avant de l'enregister dans mon block.
@@ -24,10 +25,13 @@ MINING_SENDER = "THE BLOCKCHAIN"
 
 class Blockchain():
 
-    def __init__(self):
+    def __init__(self, network):
         self.current_transactions = []
         self.chain = []
         self.nodes = set()
+
+        if not isinstance(network, Network):
+            raise ValueError('network should be an instance of Network.')
 
         # Create the genesis block
         self._genesis_block()

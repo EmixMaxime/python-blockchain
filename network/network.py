@@ -1,6 +1,6 @@
 import socket
 import jsonpickle
-from threading import Thread
+import threading
 from network.node import Node
 
 
@@ -10,11 +10,15 @@ class Network:
         self.node = Node()
         self.nodes = []
         self.blockchain = None
-        t1 = Thread(target=self.receiv)
-        t1.start()
+
+        # Thread management
+        self._running = True
+        pill2kill = threading.Event()
+        self.t1 = threading.Thread(target=self.receiv)
+        self.t1.start()
 
     def stop_network(self):
-        self.t1._Thread__stop()
+        self._running = False
 
     def set_blockchain(self, blockchain_):  # Done
         self.blockchain = blockchain_
@@ -38,15 +42,16 @@ class Network:
     def receiv(self):
         print("ready to receiv")
 
-        while True:
-            data, addr = mode.s.recvfrom(1024)
+        while self._running is True:
+            data, addr = self.node.s.recvfrom(1024)
             curentNode = Node(str(addr))
 
             myData = str(data)
 
             if myData[:3] == "-c ":  # Done
                 # Retourne le JSON de la chaine
-                self.node.send("-ac", self.node.s, cureNode, self.blockchain.chain_for_network)
+                self.node.send("-ac", self.node.s, cureNode,
+                               self.blockchain.chain_for_network)
 
             elif myData[:3] == "-n ":  # Done
                 # Parcourir la liste de noeud et les envois a l'emmeteur
@@ -81,5 +86,3 @@ class Network:
                 if notFind:
                     self.nodes.append(nodeReceiv)
                     notFind = False
-
-        c.close()
