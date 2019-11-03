@@ -19,11 +19,11 @@ class Node:
         self.port = 5000
         self.s = None
 
-    def _init_node(self):
-        """
-        Initialize the node as myself.
-        """
+    """
+    Initialize the node as myself.
+    """
 
+    def _init_node(self):
         self.s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.s.bind((self.host, self.port))
 

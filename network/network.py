@@ -1,7 +1,7 @@
 import socket
 import jsonpickle
 from threading import Thread
-from node import Node
+from network.node import Node
 
 
 class Network:
