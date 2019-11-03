@@ -20,15 +20,12 @@ class Node:
         self.s = None
 
     def _init_node(self):
-    """
-    Initialize the node as myself.
-    """
+        """
+        Initialize the node as myself.
+        """
 
-    self.s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    self.s.bind((self.host, self.port))
-
-    def ping(self, node_to_ping):
-        send("-p ", self.s, node_to_ping, "")
+        self.s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.s.bind((self.host, self.port))
 
     def send(self, command_, s_, node_, message_):
         server = (node_.host, node_.port)  # Server

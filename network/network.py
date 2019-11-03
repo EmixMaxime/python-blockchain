@@ -10,6 +10,11 @@ class Network:
         self.node = Node()
         self.nodes = []
         self.blockchain = None
+        t1 = Thread(target=self.receiv)
+        t1.start()
+
+    def stop_network(self):
+        self.t1._Thread__stop()
 
     def set_blockchain(self, blockchain_):  # Done
         self.blockchain = blockchain_
@@ -41,8 +46,7 @@ class Network:
 
             if myData[:3] == "-c ":  # Done
                 # Retourne le JSON de la chaine
-                self.node.send("-ac", self.node.s, cureNode,
-                               self.blockchain.chain_for_network)
+                self.node.send("-ac", self.node.s, cureNode, self.blockchain.chain_for_network)
 
             elif myData[:3] == "-n ":  # Done
                 # Parcourir la liste de noeud et les envois a l'emmeteur
