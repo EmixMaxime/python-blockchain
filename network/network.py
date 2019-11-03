@@ -1,7 +1,7 @@
 import socket
 import jsonpickle
 from threading import Thread
-from Node import Node
+from node import Node
 
 class Network:
   
@@ -16,17 +16,19 @@ class Network:
 
 	def broadcast_transaction(self, str_transaction_): #Done
 		for nodeList in self.nodes:
-			node.send("-t ", node.s, nodeList, str_transaction_)
+			self.node.send("-t ", node.s, nodeList, str_transaction_)
     
 	def broadcast_block(self, str_block_): #Done
 		for nodeList in self.nodes:
-			node.send("-b ", node.s, nodeList, str_block_)
+			self.node.send("-b ", node.s, nodeList, str_block_)
 
 	def broadcast_ask_chain(self): #Done
 		for nodeList in self.nodes:
-			node.send("-c ", node.s, nodeList, "")
+			self.node.send("-c ", node.s, nodeList, "")
 
-	#Une fonction pour broadcast ping 
+	def broadcast_ping(self):
+		nodeBroadcast = node("255.255.255.0")
+		self.node.send("-p ", self.node.s, nodeBroadcast, "") 
 
 	def receiv(self):
 		print("ready to receiv")
@@ -39,13 +41,13 @@ class Network:
 
 			if myData[:3] == "-c ": #Done
 				#Retourne le JSON de la chaine
-				nodes.send("-ac", node.s, cureNode, self.blockchain.chain_for_network)
+				self.node.send("-ac", self.node.s, cureNode, self.blockchain.chain_for_network)
 
 			elif myData[:3] == "-n ": #Done
 				#Parcourir la liste de noeud et les envois a l'emmeteur
 				for nodeList in self.nodes:
 					nodeToSend = jsonpickle.encode(nodeList)
-					node.send("-an", node.s, cureNode, nodeToSend)
+					self.node.send("-an", self.node.s, cureNode, nodeToSend)
 
 			elif myData[:3] == "-t ": #Done
 				#Reception d'une transaction
@@ -58,21 +60,21 @@ class Network:
 			elif myData[:3] == "-p ": #Done
 				#Repond present 
 				nodeToSend = jsonpickle.encode(self.node)
-				node.send("-an", node, cureNode, nodeToSend)
+				self.node.send("-an", self.node, cureNode, nodeToSend)
 
 			elif myData[:3] == "-ac": #En suspend
 				some = None 
 
 			elif myData[:3] == "-an": #Done
-				node = jsonpickle.decode(myData[3:length(myData)])
+				nodeReceiv = jsonpickle.decode(myData[3:length(myData)])
 
 				notFind = True
 				for nodeList in self.nodes:
-					if nodeList.host == node.host:
+					if nodeList.host == nodeReceiv.host:
 						notFind = False
 
 				if notFind:
-					self.nodes.append(node)
+					self.nodes.append(nodeReceiv)
 					notFind = False
 		
 		c.close()
