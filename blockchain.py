@@ -4,6 +4,7 @@ from time import time
 from urllib.parse import urlparse
 from uuid import uuid4
 from collections import OrderedDict
+import jsonpickle
 
 from block import Block
 from transaction import Transaction
@@ -30,7 +31,19 @@ class Blockchain():
         self.nodes = set()
 
         # Create the genesis block
-        self.new_block(100, '1')
+        self._genesis_block()
+
+    def _genesis_block(self):
+        t1 = Transaction('@sender_address', '@recipient_address', 50)
+
+        nonce = 55
+        previous_hash = 0
+        b1 = Block(nonce, t1, 0, 0)
+
+        self.chain.append(b1)
+
+        # genesis_hash = Block.hash(b1)
+        # print('genesis_hash = ', genesis_hash)
 
     def register_node(self, node):
         """
@@ -45,7 +58,11 @@ class Blockchain():
     def last_block(self):
         return self.chain[-1]
 
-    def submit_transaction(self, transaction, signature):
+    @property
+    def chain_for_network(self):
+        return jsonpickle.encode(self.chain)
+
+    def submit_transaction(self, transaction):
         """
         Add a transaction to transactions array if the signature verified
         Return index of block that the transaction will be.
@@ -54,7 +71,7 @@ class Blockchain():
             raise ValueError(
                 'transaction parameter should be a Transaction instance.')
 
-        transaction_verification = transaction.verify_signature(signature)
+        transaction_verification = transaction.verify_signature()
 
         if transaction_verification:
             self.current_transactions.append(transaction)
@@ -62,7 +79,7 @@ class Blockchain():
 
         return False
 
-    def new_block(self, nonce, previous_hash):
+    def create_block(self, nonce, previous_hash):
         """
         Create a new Block in the Blockchain
         :param nonce: The nonce given by the Proof of Work algorithm
@@ -80,6 +97,19 @@ class Blockchain():
         self.chain.append(block)
         return block
 
+    def submit_block(self, block):
+        """
+        Add a Block in the Blockchain if the Block signature is valid.
+        """
+        # @TODO:
+        # What should I do if in this block it contains transactions that I'm currently mining? I should stop mining these transactions maybe? To see with Merkle Tree.
+        if not Block.valid_block(block, self.last_block):
+            return False
+
+        self.chain.append(block)
+
+        return True
+
     def valid_chain(self, chain):
         """
         Determine if a given blockchain is valid
@@ -87,30 +117,21 @@ class Blockchain():
         :return: True if valid, False if not
         """
 
-        last_block = chain[0]
+        chain = jsonpickle.decode(chain)
+
+        previous_block = chain[0]
 
         current_index = 1
         lenChain = len(chain)
 
         while current_index < lenChain:
+            # Check with previous_block & current_block
             current_block = chain[current_index]
 
-            # Check with last_block & current_block
-
-            print(f'{last_block}')
-            print(f'{current_block}')
-            print("\n-----------\n")
-
-            # Check that the hash of the block is correct
-            last_block_hash = Block.hash(last_block)
-            if current_block['previous_hash'] != last_block_hash:
+            if (not Block.valid_block(current_block, previous_block)):
                 return False
 
-            # Check that the Proof of Work is correct
-            if not Block.valid_proof(last_block['proof'], current_block['proof'], last_block_hash):
-                return False
-
-            last_block = current_block
+            previous_block = current_block
             current_index += 1
 
         return True
@@ -135,7 +156,7 @@ class Blockchain():
 
         # Forge the new Block by adding it to the chain
         previous_hash = Block.hash(last_block)
-        block = self.new_block(nonce, previous_hash)
+        block = self.create_block(nonce, previous_hash)
 
         response = {
             'message': "New Block Forged",

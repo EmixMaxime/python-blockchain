@@ -16,12 +16,12 @@ def test_signature():
     transaction = Transaction(
         sender_address=my_address, recipient_address=guy_address, value=value)
 
-    signature = wallet.sign_transaction(transaction)
+    transaction.sign(wallet)
 
-    assert transaction.verify_signature(signature) == True
+    assert transaction.verify_signature() == True
 
     # guy sign my transaction...
-    fake_signature = guy_wallet.sign_transaction(transaction)
-    is_valid = transaction.verify_signature(fake_signature)
+    transaction.sign(guy_wallet)
+    is_valid = transaction.verify_signature()
 
     assert is_valid == False

@@ -63,7 +63,7 @@ class Wallet:
         Sign transaction with private key
         """
 
-        if not isinstance(transaction, Transaction):
-            raise ValueError('transaction should be Transation instance.')
+        # if not isinstance(transaction, Transaction):
+        #     raise ValueError('transaction should be Transation instance.')
 
-        return MxCrypto.sign(self.private_key, transaction.toJSON())
+        return MxCrypto.sign(self.private_key, transaction)
