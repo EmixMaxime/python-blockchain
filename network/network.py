@@ -15,9 +15,9 @@ class Network:
         self._running = True
         self.t1 = threading.Thread(target=self.receiv)
         self.t1.start()
-        self._broadcast_ping()
+        # self._broadcast_ping()
 
-    def stop_network(self):
+    def stop(self):
         self._running = False
 
     def set_blockchain(self, blockchain_):  # Done
@@ -36,7 +36,7 @@ class Network:
             self.node.send("-c ", node.s, nodeList, "")
 
     def _broadcast_ping(self):
-        nodeBroadcast = Node("255.255.255.0")
+        nodeBroadcast = Node("192.168.1.82")
         self.node.send("-p ", self.node.s, nodeBroadcast, "")
 
     def receiv(self):
