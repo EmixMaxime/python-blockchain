@@ -8,16 +8,15 @@ class Node:
     """
 
     def __init__(self, host_=None):
+        self.port = 5000
+        self.s = None
 
-        if host_ is Node:
+        if host_ is None:
             host_name = socket.gethostname()
             self.host = socket.gethostbyname(host_name)
             self._init_node()
         else:
             self.host = host_  # Adresse du pc
-
-        self.port = 5000
-        self.s = None
 
     """
     Initialize the node as myself.
