@@ -13,7 +13,6 @@ class Network:
 
         # Thread management
         self._running = True
-        pill2kill = threading.Event()
         self.t1 = threading.Thread(target=self.receiv)
         self.t1.start()
 
