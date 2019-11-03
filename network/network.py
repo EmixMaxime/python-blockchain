@@ -15,6 +15,7 @@ class Network:
         self._running = True
         self.t1 = threading.Thread(target=self.receiv)
         self.t1.start()
+        self._broadcast_ping()
 
     def stop_network(self):
         self._running = False
@@ -34,7 +35,7 @@ class Network:
         for nodeList in self.nodes:
             self.node.send("-c ", node.s, nodeList, "")
 
-    def broadcast_ping(self):
+    def _broadcast_ping(self):
         nodeBroadcast = Node("255.255.255.0")
         self.node.send("-p ", self.node.s, nodeBroadcast, "")
 
@@ -45,7 +46,7 @@ class Network:
             data, addr = self.node.s.recvfrom(1024)
             curentNode = Node(str(addr))
 
-            myData = str(data)
+            myData = data.decode()
 
             if myData[:3] == "-c ":  # Done
                 # Retourne le JSON de la chaine
@@ -74,7 +75,7 @@ class Network:
             elif myData[:3] == "-ac":  # En suspend
                 some = None
 
-            elif myData[:3] == "-an":  # Done
+            elif myData[:3] == "-ap":  # Done
                 nodeReceiv = jsonpickle.decode(myData[3:length(myData)])
 
                 notFind = True
@@ -83,5 +84,6 @@ class Network:
                         notFind = False
 
                 if notFind:
+                    print("Connecting to a new Node: ", nodeReceiv)
                     self.nodes.append(nodeReceiv)
                     notFind = False

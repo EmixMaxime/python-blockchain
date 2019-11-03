@@ -11,4 +11,4 @@ def blockchain_factory():
 
     network.set_blockchain(bc)
 
-    return bc
+    return bc, network

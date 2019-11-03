@@ -28,4 +28,5 @@ class Node:
 
     def send(self, command_, s_, node_, message_):
         server = (node_.host, node_.port)  # Server
-        self.s_.sendto(command_ + message_, servers)
+        msg_to_send = (command_ + message_).encode()
+        self.s.sendto(msg_to_send, server)
