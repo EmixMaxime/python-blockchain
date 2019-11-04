@@ -26,12 +26,13 @@ MINING_SENDER = "THE BLOCKCHAIN"
 class Blockchain():
 
     def __init__(self, network):
+        if not isinstance(network, Network):
+            raise ValueError('network should be an instance of Network.')
+
         self.current_transactions = []
         self.chain = []
         self.nodes = set()
-
-        if not isinstance(network, Network):
-            raise ValueError('network should be an instance of Network.')
+        self.network = network
 
         # Create the genesis block
         self._genesis_block()
@@ -61,11 +62,22 @@ class Blockchain():
         Add a transaction to transactions array if the signature verified
         Return index of block that the transaction will be.
         """
+
+        # from the network, is a str that contains a json.
+        if isinstance(transaction, str):
+            transaction = jsonpickle.decode(transaction)
+
+        if transaction in self.current_transactions:
+            print('I received an transaction, but I already know it, so I ignore it.')
+            return False
+
         if not isinstance(transaction, Transaction):
             raise ValueError(
                 'transaction parameter should be a Transaction instance.')
 
         transaction_verification = transaction.verify_signature()
+
+        self.network.broadcast_transaction(jsonpickle.encode(transaction))
 
         if transaction_verification:
             self.current_transactions.append(transaction)
@@ -89,6 +101,8 @@ class Blockchain():
         self.current_transactions = []
 
         self.chain.append(block)
+        self.network.broadcast_block(jsonpickle.encode(block))
+
         return block
 
     def submit_block(self, block):
