@@ -63,6 +63,7 @@ class Blockchain():
         Return index of block that the transaction will be.
         """
 
+        print('handling transaction: ', transaction)
         # from the network, is a str that contains a json.
         if isinstance(transaction, str):
             transaction = jsonpickle.decode(transaction)
