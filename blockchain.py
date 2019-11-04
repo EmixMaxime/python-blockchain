@@ -6,6 +6,8 @@ from uuid import uuid4
 from collections import OrderedDict
 import jsonpickle
 
+from init_transactions import getInitialTransactions
+
 from block import Block
 from transaction import Transaction
 from wallet import Wallet
@@ -33,11 +35,12 @@ class Blockchain():
         self._genesis_block()
 
     def _genesis_block(self):
-        t1 = Transaction('@sender_address', '@recipient_address', 50)
+        txs = getInitialTransactions()
 
         nonce = 55
         previous_hash = 0
-        b1 = Block(nonce, t1, 0, 0)
+        index = 0
+        b1 = Block(nonce, txs, index, previous_hash)
 
         self.chain.append(b1)
 
@@ -52,6 +55,29 @@ class Blockchain():
     def chain_for_network(self):
         return jsonpickle.encode(self.chain)
 
+    def check_sender_stock(self, tx):
+        #check sur le block en cours
+        i = 1
+        nb = 0
+        while 1 > nb and i <= len(self.current_transactions):
+            if self.current_transactions[-i].value == tx.value:
+                if self.current_transactions[-i].sender_address == tx.sender_address:
+                    nb = nb - 1
+                elif self.current_transactions[-i].recipient_address == tx.recipient_address:
+                    nb = nb + 1
+            i = i + 1
+
+        #check sur les anciens blocs
+        #TODO user last_block
+        current_block = self.chain[-1]
+        i = current_block.index
+        while 1 > nb and i >= 0:
+            current_block = self.chain[i]
+            nb = current_block.check_sender_stock(tx, nb)
+            i = i - 1
+
+        return nb >= 1
+
     def submit_transaction(self, transaction):
         """
         Add a transaction to transactions array if the signature verified
@@ -61,7 +87,7 @@ class Blockchain():
             raise ValueError(
                 'transaction parameter should be a Transaction instance.')
 
-        transaction_verification = transaction.verify_signature()
+        transaction_verification = transaction.verify_signature() and self.check_sender_stock(transaction)
 
         if transaction_verification:
             self.current_transactions.append(transaction)
