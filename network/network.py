@@ -7,7 +7,7 @@ from network.node import Node
 class Network:
 
     def __init__(self):
-        self.node = Node("192.168.1.34", True)
+        self.node = Node("192.168.1.82", True)
         self.nodes = []
         self.blockchain = None
 
@@ -35,8 +35,8 @@ class Network:
         for nodeList in self.nodes:
             self.node.send("-c ", nodeList, "")
 
-    def _broadcast_ping(self):
-        nodeBroadcast = Node("192.168.1.255")
+    def _broadcast_ping(self): #Not use
+        nodeBroadcast = Node("192.168.1.62")
         self.node.send("-p ", nodeBroadcast, "")
 
     def receiv(self):
@@ -45,7 +45,7 @@ class Network:
         while self._running is True:
             data, addr = self.node.my_socket.recvfrom(1024)
 
-            cureNode = Node(str(addr.decode))
+            cureNode = addr
 
             myData = data.decode()
 

@@ -25,8 +25,15 @@ class Node:
         self.my_socket.bind((self.host, self.port))
 
     def send(self, command_, node_, message_):
-        server = (node_.host, node_.port)  # Server
-        msg_to_send = (command_ + message_)
-        print('send msg:', msg_to_send, 'to ',
-              server, 'with socket', self.my_socket)
-        self.my_socket.sendto(msg_to_send.encode(), server)
+        
+        if command_[:2] == "-a":
+            #server = node_.host  # Server
+            msg_to_send = (command_ + message_)
+            print('send msg:', msg_to_send, 'to ', node_)
+            self.my_socket.sendto(msg_to_send.encode(), node_)
+        
+        else: 
+            server = (node_.host, node_.port)  # Server
+            msg_to_send = (command_ + message_)
+            print('send msg:', msg_to_send, 'to ', server)
+            self.my_socket.sendto(msg_to_send.encode(), server)
