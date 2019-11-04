@@ -112,6 +112,7 @@ class Blockchain():
         return block
 
     def submit_block(self, block):
+        print('handling transaction: ', transaction)
 
         if isinstance(block, str):
             block = jsonpickle.decode(block)
