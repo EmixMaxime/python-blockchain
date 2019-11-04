@@ -2,8 +2,10 @@ import jsonpickle
 from time import time
 import hashlib
 
+from merkle_tree import MerkleTree
+
 MINING_DIFFICULTY = 2
-HASH_GENESIS_BLOCK = "a37c5dfb2a28763c7e4468f4d817f109d9ae4ccbbb7fdefe9ee2f27b0ab3974f"
+HASH_GENESIS_BLOCK = "b4358083b2c93824360c5779e1cbe00998d7f09553fd7d18ef8f012b59e82a0f"
 
 
 class Block(object):
@@ -13,6 +15,15 @@ class Block(object):
         self.transactions = transactions
         self.timestamp = time()
         self.previous_hash = previous_hash
+
+        self.merkle_root
+
+    @property
+    def merkle_root(self):
+        txs_hashes = []
+        for tx in self.transactions:
+            txs_hashes.append(hashlib.sha256(tx.toJSON().encode()).hexdigest())
+        return MerkleTree.merkle(txs_hashes)
 
     @staticmethod
     def hash(block):
