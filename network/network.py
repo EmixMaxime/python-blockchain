@@ -62,11 +62,12 @@ class Network:
 
             elif myData[:3] == "-t ":  # Done
                 # Reception d'une transaction
-                self.blockchain.submit_block(myData[3:length(myData)])
+                self.blockchain.submit_block(myData[3:len(myData)])
+                print("transaction receive")
 
             elif myData[:3] == "-b ":  # Done
                 # Reception d'un block
-                self.blockchain.submit_transaction(myData[3:length(myData)])
+                self.blockchain.submit_transaction(myData[3:len(myData)])
 
             elif myData[:3] == "-p ":  # Done
                 print('ping received')
@@ -78,7 +79,7 @@ class Network:
                 some = None
 
             elif myData[:3] == "-ap":  # Done
-                nodeReceiv = jsonpickle.decode(myData[3:length(myData)])
+                nodeReceiv = jsonpickle.decode(myData[3:len(myData)])
 
                 notFind = True
                 for nodeList in self.nodes:
