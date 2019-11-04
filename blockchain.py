@@ -21,6 +21,7 @@ Our Blockchain class is responsible for managing the chain. It will store transa
 """
 
 MINING_SENDER = "THE BLOCKCHAIN"
+NB_TRANSACTIONS_MAX = 2
 
 
 class Blockchain():
@@ -83,6 +84,10 @@ class Blockchain():
         if transaction_verification:
             self.current_transactions.append(transaction)
             return len(self.chain) + 1
+
+        # Should I mine?
+        if len(self.current_transactions) == NB_TRANSACTIONS_MAX:
+            self.mine() 
 
         return False
 
