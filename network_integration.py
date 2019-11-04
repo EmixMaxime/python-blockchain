@@ -7,7 +7,7 @@ bc, network = blockchain_factory()
 
 wallet = Wallet()
 wallet2 = Wallet(1024, True)
-transaction = Transaction(wallet.addresse, wallet2.addresse, "bonjour")
+transaction = Transaction(wallet.address, wallet2.address, "bonjour")
 
 transaction.sign(wallet)
 
