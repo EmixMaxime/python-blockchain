@@ -62,12 +62,12 @@ class Network:
 
             elif myData[:3] == "-t ":  # Done
                 # Reception d'une transaction
-                self.blockchain.submit_block(myData[3:len(myData)])
+                self.blockchain.submit_transaction(myData[3:len(myData)])
                 print("transaction receive")
 
             elif myData[:3] == "-b ":  # Done
                 # Reception d'un block
-                self.blockchain.submit_transaction(myData[3:len(myData)])
+                self.blockchain.submit_block(myData[3:len(myData)])
 
             elif myData[:3] == "-p ":  # Done
                 print('ping received')
