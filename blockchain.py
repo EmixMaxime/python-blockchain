@@ -63,18 +63,18 @@ class Blockchain():
             if self.current_transactions[-i].value == tx.value:
                 if self.current_transactions[-i].sender_address == tx.sender_address:
                     nb = nb - 1
-                elif self.current_transactions[-i].recipient_address == tx.recipient_address:
+                elif self.current_transactions[-i].recipient_address == tx.sender_address:
                     nb = nb + 1
             i = i + 1
 
         #check sur les anciens blocs
-        #TODO user last_block
-        current_block = self.chain[-1]
-        i = current_block.index
-        while 1 > nb and i >= 0:
-            current_block = self.chain[i]
-            nb = current_block.check_sender_stock(tx, nb)
-            i = i - 1
+        if len(self.chain) >= 1 :
+            current_block = self.last_block
+            i = current_block.index
+            while 1 > nb and i >= 0:
+                current_block = self.chain[i]
+                nb = current_block.check_sender_stock(tx, nb)
+                i = i - 1
 
         return nb >= 1
 
@@ -83,6 +83,7 @@ class Blockchain():
         Add a transaction to transactions array if the signature verified
         Return index of block that the transaction will be.
         """
+        print("Working on Transaction", transaction)
         if not isinstance(transaction, Transaction):
             raise ValueError(
                 'transaction parameter should be a Transaction instance.')
@@ -91,8 +92,10 @@ class Blockchain():
 
         if transaction_verification:
             self.current_transactions.append(transaction)
-            return len(self.chain) + 1
+            print("Transaction signature is valid")
+            return len(self.chain)
 
+        print("Transaction signature is invalid")
         return False
 
     def create_block(self, nonce, previous_hash):
@@ -104,8 +107,8 @@ class Blockchain():
         """
 
         # Why we have this OR condition? Seems useless.
-        block = Block(nonce, self.current_transactions, len(self.chain) +
-                      1, previous_hash or Block.hash(self.chain[-1]))
+        block = Block(nonce, self.current_transactions, len(self.chain), 
+                        previous_hash or Block.hash(self.chain[-1]))
 
         # Reset the current list of transactions
         self.current_transactions = []
