@@ -14,17 +14,27 @@ class Wallet:
     Manage my priv/pub key.
     """
 
-    def __init__(self, key_length=4096, regenerate=False):
+    def __init__(self, key_length=4096, regenerate=False, testDatas=False):
         if regenerate is True:
             public_key, private_key = MxCrypto.generate_keys(key_length)
         else:
-            try:
-                public_key, private_key = Wallet._import_keys()
-            except FileNotFoundError:
-                # to handle!
-                public_key, private_key = MxCrypto.generate_keys(key_length)
+            if testDatas is True:
+                try:
+                    public_key, private_key = Wallet._import_keys('./testKeys/')
+                except FileNotFoundError:
+                    print("ERROR : Keys not found")
+                    #TODO : faire quelque chose avec cette erreur ?
+                    testDatas = False
+            if testDatas is False:
+                try:
+                    public_key, private_key = Wallet._import_keys()
+                except FileNotFoundError:
+                    print("ERROR : Keys not found - Generate new keys")
+                    # to handle!
+                    public_key, private_key = MxCrypto.generate_keys(key_length)
 
-                Wallet._save_key(public_key, private_key)
+                    Wallet._save_key(public_key, private_key)
+
 
         self.public_key = public_key
         self.private_key = private_key
@@ -47,13 +57,13 @@ class Wallet:
             pu.write(public_pem)
 
     @staticmethod
-    def _import_keys():
+    def _import_keys(path = './keys/'):
         """
         Importing keys from files, converting it into the RsaKey object
         """
-        private_key = RSA.import_key(open('./keys/private.pem', 'r').read())
+        private_key = RSA.import_key(open(path + 'private.pem', 'r').read())
 
-        str_public_key = open('./keys/public.pem', 'r').read()
+        str_public_key = open(path + 'public.pem', 'r').read()
         public_key = RSA.import_key(str_public_key)
 
         return public_key, private_key
