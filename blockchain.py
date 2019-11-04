@@ -106,6 +106,13 @@ class Blockchain():
         return block
 
     def submit_block(self, block):
+
+        if isinstance(block, str):
+            block = jsonpickle.decode(block)
+
+        if not isinstance(block, Block):
+            raise ValueError('block should be an instance of Block')
+
         """
         Add a Block in the Blockchain if the Block signature is valid.
         """
