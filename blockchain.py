@@ -90,7 +90,7 @@ class Blockchain():
         # Should I mine?
         # if len(self.current_transactions) == NB_TRANSACTIONS_MAX:
             # self.mine() 
-
+            
         return False
 
     def create_block(self, nonce, previous_hash):
