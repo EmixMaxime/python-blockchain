@@ -22,10 +22,8 @@ class Wallet:
                 try:
                     public_key, private_key = Wallet._import_keys('./testKeys/')
                 except FileNotFoundError:
-                    print("ERROR : Keys not found")
-                    #TODO : faire quelque chose avec cette erreur ?
-                    testDatas = False
-            if testDatas is False:
+                    raise ValueError('Test keys not found, please import it')
+            else:
                 try:
                     public_key, private_key = Wallet._import_keys()
                 except FileNotFoundError:
