@@ -105,10 +105,16 @@ class Blockchain():
             raise ValueError(
                 'transaction parameter should be a Transaction instance.')
 
-        transaction_verification = transaction.verify_signature() and self.check_sender_stock(transaction)
+        is_signature_valid = transaction.verify_signature()
+        is_stock_valid = self.check_sender_stock(transaction)
 
-        if transaction_verification:
+        if not is_signature_valid:
             print("Transaction signature is valid")
+        
+        if not is_stock_valid:
+            print("Transaction is impossible because stock invalid")
+
+        if is_stock_valid and is_signature_valid:
             self.current_transactions.append(transaction)
             self.network.broadcast_transaction(jsonpickle.encode(transaction))
             # Should I mine?
