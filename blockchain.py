@@ -64,10 +64,12 @@ class Blockchain():
         Return index of block that the transaction will be.
         """
 
-        print('handling transaction: ', transaction)
         # from the network, is a str that contains a json.
         if isinstance(transaction, str):
             transaction = jsonpickle.decode(transaction)
+            print('I received a new Transaction', transaction)
+        else:
+            print("I'm sending a new Transaction", transaction)
 
         if transaction in self.current_transactions:
             print('I received an transaction, but I already know it, so I ignore it.')
