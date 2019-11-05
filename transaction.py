@@ -28,7 +28,9 @@ class Transaction:
     def to_sign(self):
         return jsonpickle.encode({'sender_address': self.sender_address,
                                   'recipient_address': self.recipient_address,
-                                  'value': self.value}).encode()
+                                  'value': self.value,
+                                  'time': self.time
+                                  }).encode()
 
     def sign(self, wallet):
         self.signature = wallet.sign_transaction(self.to_sign)
