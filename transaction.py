@@ -10,6 +10,7 @@ from Crypto.Hash import SHA256
 from mx_crypto import MxCrypto
 import json
 import jsonpickle
+import time
 
 
 class Transaction:
@@ -21,6 +22,7 @@ class Transaction:
 
         self.value = value
         self.signature = None
+        self.time = time.time()
 
     def __eq__(self, other):
         if isinstance(other, self.__class__):
@@ -28,24 +30,13 @@ class Transaction:
         
         return False
 
-    def to_dict(self):
-        return OrderedDict({'sender_address': self.sender_address,
-                            'recipient_address': self.recipient_address,
-                            'value': self.value})
-
-    def toJSON(self):
-        # return json.dumps({
-        #     'sender_address': self.sender_address,
-        #     'recipient_address': self.recipient_address,
-        #     'value': self.value
-        # }, sort_keys=True)
-        return jsonpickle.encode(self)
-
     @property
     def to_sign(self):
         return jsonpickle.encode({'sender_address': self.sender_address,
                                   'recipient_address': self.recipient_address,
-                                  'value': self.value}).encode()
+                                  'value': self.value,
+                                  'time': self.time
+                                  }).encode()
 
     def sign(self, wallet):
         self.signature = wallet.sign_transaction(self.to_sign)
