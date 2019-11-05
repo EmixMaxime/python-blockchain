@@ -104,6 +104,5 @@ class Network:
 
                 if notFind:
                     print("Connecting to a new Node: ", nodeReceiv.host)
-                    self.node.send("-c ", Node(addr[0]), "")
                     self.nodes.append(nodeReceiv)
                     notFind = False
