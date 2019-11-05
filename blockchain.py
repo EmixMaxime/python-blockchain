@@ -173,8 +173,6 @@ class Blockchain():
         :return: True if valid, False if not
         """
 
-        chain = jsonpickle.decode(chain)
-
         previous_block = chain[0]
 
         current_index = 1
@@ -198,7 +196,7 @@ class Blockchain():
         To do this, I ask the network the chain and initialize mine with this chain.
         We should to something like a concensus (the largest chain win), but it's not done yet.
         """
-        chain = jsonpickle.encode(chain_from_network)
+        chain = jsonpickle.decode(chain_from_network)
 
         if self.valid_chain(chain):
             print('Initialize chain')
