@@ -44,7 +44,7 @@ class Network:
         print("ready to receiv")
 
         while self._running is True:
-            data, addr = self.node.my_socket.recvfrom(2048)
+            data, addr = self.node.my_socket.recvfrom(4096)
 
             cureNode = addr
 
