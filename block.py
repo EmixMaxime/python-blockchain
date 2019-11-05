@@ -75,7 +75,7 @@ class Block(object):
         previous_block_hash = Block.hash(previous_block)
 
         if block_to_validate.previous_hash != previous_block_hash:
-            print('block_to_validate.previous_hash != previous_block_hash')
+            print('block_to_validate.previous_hash != previous_block_hash', block_to_validate.previous_hash, '!=', previous_block_hash)
             return False
 
         # Check that the Proof of Work is correct

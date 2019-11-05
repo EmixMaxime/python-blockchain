@@ -151,7 +151,7 @@ class Blockchain():
 
         if isinstance(block, str):
             block = jsonpickle.decode(block)
-            print("I received a new Block", block)
+            print("I received a new Block", block, "prev hash:", block.previous_hash)
 
         if not isinstance(block, Block):
             raise ValueError('block should be an instance of Block')
