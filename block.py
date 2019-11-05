@@ -3,7 +3,7 @@ from time import time
 import hashlib
 
 MINING_DIFFICULTY = 2
-HASH_GENESIS_BLOCK = "a37c5dfb2a28763c7e4468f4d817f109d9ae4ccbbb7fdefe9ee2f27b0ab3974f"
+HASH_GENESIS_BLOCK = "525a0883e4ab8b1c6b99eb8f900b79b1b3542b742721c78359501fccae9b4b8d"
 
 
 class Block(object):
