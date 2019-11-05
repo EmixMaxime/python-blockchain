@@ -37,7 +37,7 @@ class Network:
             self.node.send("-c ", nodeList, "")
 
     def _broadcast_ping(self): #Done
-        nodeBroadcast = Node("192.168.1.82")
+        nodeBroadcast = Node("192.168.1.62")
         myNodeToSend = jsonpickle.encode(self.node)
         self.node.send("-p ", nodeBroadcast, myNodeToSend)
 
