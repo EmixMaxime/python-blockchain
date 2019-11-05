@@ -35,7 +35,7 @@ class Network:
         for nodeList in self.nodes:
             self.node.send("-c ", nodeList, "")
 
-    def _broadcast_ping(self): #Not use
+    def _broadcast_ping(self): #Done
         nodeBroadcast = Node("192.168.1.62")
         myNodeToSend = jsonpickle.encode(self.node)
         self.node.send("-p ", nodeBroadcast, myNodeToSend)
@@ -85,11 +85,12 @@ class Network:
 
                 if notFind:
                     print("Connecting to a new Node: ", nodeReceiv.host)
+                    self.node.send("-c ", Node(addr[0]), "")
                     self.nodes.append(nodeReceiv)
                     notFind = False
 
             elif myData[:3] == "-ac":  # En suspend
-                some = None
+                self.blockchain.initialize_chain(myData[3:len(myData)])
 
             elif myData[:3] == "-ap":  # Done
                 nodeReceiv = jsonpickle.decode(myData[3:len(myData)])
@@ -103,5 +104,6 @@ class Network:
 
                 if notFind:
                     print("Connecting to a new Node: ", nodeReceiv.host)
+                    self.node.send("-c ", Node(addr[0]), "")
                     self.nodes.append(nodeReceiv)
                     notFind = False
