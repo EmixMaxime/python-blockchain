@@ -29,7 +29,7 @@ class Node:
         if command_[:2] == "-a":
             #server = node_.host  # Server
             msg_to_send = (command_ + message_)
-            print('send msg:', msg_to_send, 'to ', node_)
+            #print('send msg:', msg_to_send, 'to ', node_)
             self.my_socket.sendto(msg_to_send.encode(), node_)
         
         else: 
