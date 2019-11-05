@@ -35,5 +35,5 @@ class Node:
         else: 
             server = (node_.host, node_.port)  # Server
             msg_to_send = (command_ + message_)
-            print('send msg:', msg_to_send, 'to ', server)
+            #print('send msg:', msg_to_send, 'to ', server)
             self.my_socket.sendto(msg_to_send.encode(), server)
