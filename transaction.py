@@ -22,19 +22,6 @@ class Transaction:
         self.value = value
         self.signature = None
 
-    def to_dict(self):
-        return OrderedDict({'sender_address': self.sender_address,
-                            'recipient_address': self.recipient_address,
-                            'value': self.value})
-
-    def toJSON(self):
-        # return json.dumps({
-        #     'sender_address': self.sender_address,
-        #     'recipient_address': self.recipient_address,
-        #     'value': self.value
-        # }, sort_keys=True)
-        return jsonpickle.encode(self)
-
     @property
     def to_sign(self):
         return jsonpickle.encode({'sender_address': self.sender_address,
