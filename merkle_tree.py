@@ -4,6 +4,8 @@ class MerkleTree:
     # Hash pairs of items recursively until a single value is obtained
     @staticmethod
     def merkle(hashList):
+        if len(hashList) == 0:
+            return False
         if len(hashList) == 1:
             return hashList[0]
         newHashList = []
