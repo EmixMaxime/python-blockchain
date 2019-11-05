@@ -1,9 +1,12 @@
 from blockchain_factory import blockchain_factory
 from wallet import Wallet
 from transaction import Transaction
+import time
 
 
 bc, network = blockchain_factory()
+
+time.sleep(5)
 
 wallet = Wallet()
 wallet2 = Wallet(1024, True)
