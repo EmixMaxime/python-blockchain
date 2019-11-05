@@ -81,10 +81,10 @@ class Blockchain():
 
         transaction_verification = transaction.verify_signature()
 
-        self.network.broadcast_transaction(jsonpickle.encode(transaction))
-
         if transaction_verification:
             self.current_transactions.append(transaction)
+            self.network.broadcast_transaction(jsonpickle.encode(transaction))
+            
             return len(self.chain) + 1
 
         # Should I mine?
