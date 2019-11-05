@@ -6,6 +6,8 @@ from uuid import uuid4
 from collections import OrderedDict
 import jsonpickle
 
+from init_transactions import getInitialTransactions
+
 from block import Block
 from transaction import Transaction
 from wallet import Wallet
@@ -39,11 +41,12 @@ class Blockchain():
         self._genesis_block()
 
     def _genesis_block(self):
-        t1 = Transaction('@sender_address', '@recipient_address', 50)
+        txs = getInitialTransactions()
 
         nonce = 55
         previous_hash = 0
-        b1 = Block(nonce, t1, 0, 0)
+        index = 0
+        b1 = Block(nonce, txs, index, previous_hash)
 
         self.chain.append(b1)
 
@@ -57,6 +60,29 @@ class Blockchain():
     @property
     def chain_for_network(self):
         return jsonpickle.encode(self.chain)
+
+    def check_sender_stock(self, tx):
+        #check sur le block en cours
+        i = 1
+        nb = 0
+        while 1 > nb and i <= len(self.current_transactions):
+            if self.current_transactions[-i].value == tx.value:
+                if self.current_transactions[-i].sender_address == tx.sender_address:
+                    nb = nb - 1
+                elif self.current_transactions[-i].recipient_address == tx.sender_address:
+                    nb = nb + 1
+            i = i + 1
+
+        #check sur les anciens blocs
+        if len(self.chain) >= 1 :
+            current_block = self.last_block
+            i = current_block.index
+            while 1 > nb and i >= 0:
+                current_block = self.chain[i]
+                nb = current_block.check_sender_stock(tx, nb)
+                i = i - 1
+
+        return nb >= 1
 
     def submit_transaction(self, transaction):
         """
@@ -79,18 +105,18 @@ class Blockchain():
             raise ValueError(
                 'transaction parameter should be a Transaction instance.')
 
-        transaction_verification = transaction.verify_signature()
+        transaction_verification = transaction.verify_signature() and self.check_sender_stock(transaction)
 
         if transaction_verification:
+            print("Transaction signature is valid")
             self.current_transactions.append(transaction)
             self.network.broadcast_transaction(jsonpickle.encode(transaction))
-            
-            return len(self.chain) + 1
+            # Should I mine?
+            # if len(self.current_transactions) == NB_TRANSACTIONS_MAX:
+                # self.mine()
+            return len(self.chain)
 
-        # Should I mine?
-        # if len(self.current_transactions) == NB_TRANSACTIONS_MAX:
-            # self.mine() 
-            
+        print("Transaction signature is invalid")
         return False
 
     def create_block(self, nonce, previous_hash):
@@ -102,8 +128,8 @@ class Blockchain():
         """
 
         # Why we have this OR condition? Seems useless.
-        block = Block(nonce, self.current_transactions, len(self.chain) +
-                      1, previous_hash or Block.hash(self.chain[-1]))
+        block = Block(nonce, self.current_transactions, len(self.chain), 
+                        previous_hash or Block.hash(self.chain[-1]))
 
         # Reset the current list of transactions
         self.current_transactions = []
