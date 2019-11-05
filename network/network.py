@@ -64,14 +64,14 @@ class Network:
             elif myData[:3] == "-t ":  # Done
                 # Reception d'une transaction
                 self.blockchain.submit_transaction(myData[3:len(myData)])
-                print("transaction receive")
+                print("Transaction receive")
 
             elif myData[:3] == "-b ":  # Done
                 # Reception d'un block
                 self.blockchain.submit_block(myData[3:len(myData)])
 
             elif myData[:3] == "-p ":  # Done
-                print('ping received')
+                print('Ping received')
                 # Repond present
                 nodeToSend = jsonpickle.encode(self.node)
                 self.node.send("-ap", cureNode, nodeToSend)

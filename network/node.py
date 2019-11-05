@@ -13,7 +13,7 @@ class Node:
         self.host = host_
 
         if myself == True:
-            print("Creating a socket server", self.host, ":", self.port)
+            print("I'm ready", self.host, ":", self.port)
             self._init_node()
 
     """
