@@ -62,7 +62,7 @@ class Blockchain():
         return jsonpickle.encode(self.chain)
 
     def check_sender_stock(self, tx):
-        #check sur le block en cours
+        # check sur le block en cours
         i = 1
         nb = 0
         while 1 > nb and i <= len(self.current_transactions):
@@ -73,8 +73,8 @@ class Blockchain():
                     nb = nb + 1
             i = i + 1
 
-        #check sur les anciens blocs
-        if len(self.chain) >= 1 :
+        # check sur les anciens blocs
+        if len(self.chain) >= 1:
             current_block = self.last_block
             i = current_block.index
             while 1 > nb and i >= 0:
@@ -119,7 +119,7 @@ class Blockchain():
             self.network.broadcast_transaction(jsonpickle.encode(transaction))
             # Should I mine?
             # if len(self.current_transactions) == NB_TRANSACTIONS_MAX:
-                # self.mine()
+            # self.mine()
             return len(self.chain)
 
         print("Transaction is invalid")
@@ -134,8 +134,8 @@ class Blockchain():
         """
 
         # Why we have this OR condition? Seems useless.
-        block = Block(nonce, self.current_transactions, len(self.chain), 
-                        previous_hash or Block.hash(self.chain[-1]))
+        block = Block(nonce, self.current_transactions, len(self.chain),
+                      previous_hash or Block.hash(self.chain[-1]))
 
         # Reset the current list of transactions
         self.current_transactions = []
@@ -191,6 +191,20 @@ class Blockchain():
             current_index += 1
 
         return True
+
+    def initialize_chain(self, chain_from_network):
+        """
+        When I'm a new Node on the Network, I have to initialize my chain.
+        To do this, I ask the network the chain and initialize mine with this chain.
+        We should to something like a concensus (the largest chain win), but it's not done yet.
+        """
+        chain = jsonpickle.encode(chain_from_network)
+
+        if self.valid_chain(chain):
+            print('Initialize chain')
+            self.chain = chain
+        else:
+            print('Intialize chain impossible because the chain is not valid.')
 
     def mine(self):
         """
