@@ -143,6 +143,7 @@ class Blockchain():
         self.current_transactions = []
 
         self.chain.append(block)
+        print("I'm sending a block", block)
         self.network.broadcast_block(jsonpickle.encode(block))
 
         return block
@@ -152,8 +153,6 @@ class Blockchain():
         if isinstance(block, str):
             block = jsonpickle.decode(block)
             print("I received a new Block", block)
-        else:
-            print("I'm sending a block", block)
 
         if not isinstance(block, Block):
             raise ValueError('block should be an instance of Block')
