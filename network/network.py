@@ -82,12 +82,14 @@ class Network:
             elif myData[:3] == "-ap" or myData[:3] == "-p ":  # Done
                 nodeReceiv = jsonpickle.decode(myData[3:len(myData)])
 
+                print("Try to add node : ", nodeReceiv.host)
+
                 notFind = True
                 for nodeList in self.nodes:
                     if nodeList.host == nodeReceiv.host:
                         notFind = False
 
                 if notFind:
-                    print("Connecting to a new Node: ", nodeReceiv)
+                    print("Connecting to a new Node: ", nodeReceiv.host)
                     self.nodes.append(nodeReceiv)
                     notFind = False
