@@ -109,7 +109,7 @@ class Blockchain():
         is_stock_valid = self.check_sender_stock(transaction)
 
         if not is_signature_valid:
-            print("Transaction signature is valid")
+            print("Transaction signature is invalid")
         
         if not is_stock_valid:
             print("Transaction is impossible because stock invalid")
@@ -122,7 +122,7 @@ class Blockchain():
                 # self.mine()
             return len(self.chain)
 
-        print("Transaction signature is invalid")
+        print("Transaction is invalid")
         return False
 
     def create_block(self, nonce, previous_hash):
