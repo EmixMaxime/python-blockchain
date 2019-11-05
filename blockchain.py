@@ -117,9 +117,11 @@ class Blockchain():
         if is_stock_valid and is_signature_valid:
             self.current_transactions.append(transaction)
             self.network.broadcast_transaction(jsonpickle.encode(transaction))
+
             # Should I mine?
-            # if len(self.current_transactions) == NB_TRANSACTIONS_MAX:
-            # self.mine()
+            if len(self.current_transactions) == NB_TRANSACTIONS_MAX:
+                self.mine()
+            
             return len(self.chain)
 
         print("Transaction is invalid")
@@ -233,5 +235,7 @@ class Blockchain():
             'nonce': block.nonce,
             'previous_hash': block.previous_hash,
         }
+
+        print(response)
 
         return response
