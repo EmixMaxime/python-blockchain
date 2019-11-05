@@ -93,9 +93,9 @@ class Blockchain():
         # from the network, is a str that contains a json.
         if isinstance(transaction, str):
             transaction = jsonpickle.decode(transaction)
-            print('I received a new Transaction', transaction)
+            print('I received a new Transaction', transaction, transaction.time)
         else:
-            print("I'm sending a new Transaction", transaction)
+            print("I'm sending a new Transaction", transaction, transaction.time)
 
         if transaction in self.current_transactions:
             print('I received an transaction, but I already know it, so I ignore it.')
