@@ -37,7 +37,8 @@ class Network:
 
     def _broadcast_ping(self): #Not use
         nodeBroadcast = Node("192.168.1.62")
-        self.node.send("-p ", nodeBroadcast, "")
+        myNodeToSend = jsonpickle.encode(self.node)
+        self.node.send("-p ", nodeBroadcast, myNodeToSend)
 
     def receiv(self):
         print("ready to receiv")
@@ -78,7 +79,7 @@ class Network:
             elif myData[:3] == "-ac":  # En suspend
                 some = None
 
-            elif myData[:3] == "-ap":  # Done
+            elif myData[:3] == "-ap" or myData[:3] == "-p ":  # Done
                 nodeReceiv = jsonpickle.decode(myData[3:len(myData)])
 
                 notFind = True
