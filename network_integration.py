@@ -27,7 +27,3 @@ bc.submit_transaction(transaction2)
 bc.submit_transaction(transaction3)
 
 print("Les transaction : ", bc.current_transactions)
-
-time.sleep(15)
-
-print("Les transaction : ", bc.current_transactions)

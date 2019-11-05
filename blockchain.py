@@ -143,9 +143,7 @@ class Blockchain():
         # Reset the current list of transactions
         self.current_transactions = []
 
-        self.chain.append(block)
-        print("I'm sending a block", block)
-        self.network.broadcast_block(jsonpickle.encode(block))
+        self.submit_block(block)
 
         return block
 
@@ -167,6 +165,12 @@ class Blockchain():
             return False
 
         self.chain.append(block)
+
+        # Idk If I have to do this, but... :)
+        self.current_transactions = []
+
+        print("I'm sending a block", block)
+        self.network.broadcast_block(jsonpickle.encode(block))
 
         return True
 
