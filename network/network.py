@@ -6,16 +6,17 @@ from network.node import Node
 
 class Network:
 
-    def __init__(self):
-        self.node = Node("192.168.1.82", True)
+    def __init__(self, test=False):
+        self.node = Node("192.168.1.62", True)
         self.nodes = []
         self.blockchain = None
 
-        # Thread management
-        self._running = True
-        self.t1 = threading.Thread(target=self.receiv)
-        self.t1.start()
-        self._broadcast_ping()
+        if test is False:
+            # Thread management
+            self._running = True
+            self.t1 = threading.Thread(target=self.receiv)
+            self.t1.start()
+            self._broadcast_ping()
 
     def stop(self):
         self._running = False
@@ -36,7 +37,7 @@ class Network:
             self.node.send("-c ", nodeList, "")
 
     def _broadcast_ping(self): #Done
-        nodeBroadcast = Node("192.168.1.62")
+        nodeBroadcast = Node("192.168.1.82")
         myNodeToSend = jsonpickle.encode(self.node)
         self.node.send("-p ", nodeBroadcast, myNodeToSend)
 
