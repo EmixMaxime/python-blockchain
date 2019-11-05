@@ -22,7 +22,7 @@ class Block(object):
     def merkle_root(self):
         txs_hashes = []
         for tx in self.transactions:
-            txs_hashes.append(hashlib.sha256(tx.toJSON().encode()).hexdigest())
+            txs_hashes.append(hashlib.sha256(tx.signature).hexdigest())
         return MerkleTree.merkle(txs_hashes)
 
     @staticmethod
