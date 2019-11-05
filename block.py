@@ -5,7 +5,7 @@ import hashlib
 from merkle_tree import MerkleTree
 
 MINING_DIFFICULTY = 2
-HASH_GENESIS_BLOCK = "b4358083b2c93824360c5779e1cbe00998d7f09553fd7d18ef8f012b59e82a0f"
+HASH_GENESIS_BLOCK = "8f73145e22b5eef54041892ff92f7e1ab02d6c7246e76b81f0092a8adb13118e"
 
 
 class Block(object):
