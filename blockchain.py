@@ -41,6 +41,7 @@ class Blockchain():
         previous_hash = 0
         index = 0
         b1 = Block(nonce, txs, index, previous_hash)
+        b1.timestamp = 1572993676
 
         self.chain.append(b1)
 
