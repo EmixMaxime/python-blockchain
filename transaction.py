@@ -22,6 +22,12 @@ class Transaction:
         self.value = value
         self.signature = None
 
+    def __eq__(self, other):
+        if isinstance(other, self.__class__):
+            return self.__dict__ == other.__dict__
+        
+        return False
+
     def to_dict(self):
         return OrderedDict({'sender_address': self.sender_address,
                             'recipient_address': self.recipient_address,
