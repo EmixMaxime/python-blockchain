@@ -10,6 +10,7 @@ from Crypto.Hash import SHA256
 from mx_crypto import MxCrypto
 import json
 import jsonpickle
+import time
 
 
 class Transaction:
@@ -21,6 +22,7 @@ class Transaction:
 
         self.value = value
         self.signature = None
+        self.time = time.time()
 
     @property
     def to_sign(self):
