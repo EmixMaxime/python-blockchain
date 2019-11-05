@@ -148,10 +148,12 @@ class Blockchain():
         return block
 
     def submit_block(self, block):
-        print('handling block: ', block)
 
         if isinstance(block, str):
             block = jsonpickle.decode(block)
+            print("I received a new Block", block)
+        else:
+            print("I'm sending a block", block)
 
         if not isinstance(block, Block):
             raise ValueError('block should be an instance of Block')
@@ -200,8 +202,12 @@ class Blockchain():
         """
         chain = jsonpickle.decode(chain_from_network)
 
+        # I keep my chain because its larger.
+        if len(chain) < len(self.chain):
+            False
+
         if self.valid_chain(chain):
-            print('Initialize chain')
+            print("Initialize chain: I'm taking the chain:", chain)
             self.chain = chain
         else:
             print('Intialize chain impossible because the chain is not valid.')
