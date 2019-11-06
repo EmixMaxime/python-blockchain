@@ -246,9 +246,9 @@ class Blockchain():
         response = {
             'message': "New Block Forged",
             'index': block.index,
-            'transactions': block.transactions,
+            # 'transactions': block.transactions,
             'nonce': block.nonce,
-            'previous_hash': block.previous_hash,
+            # 'previous_hash': block.previous_hash,
         }
 
         print(response)

@@ -10,11 +10,9 @@ class Network:
         self.blockchain = None
 
         if test == False:
-            print('Running network')
-            self.node = Node("192.168.43.59", True)
+            self.node = Node("192.168.43.183", True)
 
-            self.nodes = [Node("192.168.43.183"), Node(
-                "192.168.43.161"), Node("192.168.43.32")]
+            self.nodes = [Node("192.168.43.59"), Node("192.168.43.161"), Node("192.168.43.32")]
             # Thread management
             self._running = True
             self.t1 = threading.Thread(target=self.receiv)
