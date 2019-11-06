@@ -41,12 +41,6 @@ class Network:
         nodeBroadcast = Node("192.168.43.161") 
         myNodeToSend = jsonpickle.encode(self.node)
 
-        nodeBroadcast = Node("192.168.1.62")
-        self.node.send("-p ", nodeBroadcast, myNodeToSend)
-
-        nodeBroadcast = Node("192.168.1.62")
-        self.node.send("-p ", nodeBroadcast, myNodeToSend)
-
     def receiv(self):
         print("ready to receiv")
 
