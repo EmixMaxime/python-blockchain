@@ -1,7 +1,7 @@
 from flask import Flask, render_template
-from blockchain import Blockchain
+from network_integration import run
 
-my_blockchain = Blockchain()
+my_blockchain, network = run()
 
 app = Flask(__name__)
 
