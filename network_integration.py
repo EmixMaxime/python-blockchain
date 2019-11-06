@@ -32,4 +32,5 @@ def run():
     return bc, network
 
 
-run()
+if __name__ == '__main__':
+    run()

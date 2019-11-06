@@ -19,6 +19,7 @@
                     <th class="p-3 text-left">Creation time</th>
                     <th class="p-3 text-left">Previous hash</th>
                     <th class="p-3 text-left" width="110px">Number of transactions</th>
+                    <th>transactions</th>
                 </tr>
                 {% endfor %}
             </thead>
@@ -29,13 +30,22 @@
                     <td class="border-grey-light border hover:bg-gray-100 p-3 truncate">{{ block.previous_hash }}</td>
                     <td class="border-grey-light border hover:bg-gray-100 p-3 truncate">
                         {{ block.transactions | length }}</td>
+
+                    <td>
+                        {% for transaction in block.transactions %}
+                        {{ transaction.value }} - {{ transaction }}
+                        {% endfor %}
+                    </td>
                     <!-- <td
                         class="border-grey-light border hover:bg-gray-100 p-3 text-blue-400 hover:text-blue-600 hover:font-medium cursor-pointer">
                         See more</td> -->
                 </tr>
                 {% endfor %}
-
             </tbody>
+        </table>
+
+        <!-- current transactions -->
+        <table class="w-full flex flex-row flex-no-wrap sm:bg-white rounded-lg overflow-hidden sm:shadow-lg my-5">
         </table>
     </div>
 </body>
