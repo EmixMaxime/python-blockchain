@@ -7,11 +7,11 @@ from network.node import Node
 class Network:
 
     def __init__(self, test=False):
-        self.node = Node("192.168.43.183", True)
         self.nodes = []
         self.blockchain = None
 
         if test is False:
+            self.node = Node("192.168.1.62", True)
             # Thread management
             self._running = True
             self.t1 = threading.Thread(target=self.receiv)
@@ -36,8 +36,8 @@ class Network:
         for nodeList in self.nodes:
             self.node.send("-c ", nodeList, "")
 
-    def _broadcast_ping(self): #Done
-        nodeBroadcast = Node("192.168.43.161") 
+    def _broadcast_ping(self):  # Done
+        nodeBroadcast = Node("192.168.1.62")
         myNodeToSend = jsonpickle.encode(self.node)
         self.node.send("-p ", nodeBroadcast, myNodeToSend)
 
@@ -59,7 +59,8 @@ class Network:
 
             if myData[:3] == "-c ":  # Done
                 # Retourne le JSON de la chaine
-                self.node.send("-ac", cureNode, self.blockchain.chain_for_network)
+                self.node.send("-ac", cureNode,
+                               self.blockchain.chain_for_network)
 
             elif myData[:3] == "-n ":  # Done
                 print("I received a Node")
