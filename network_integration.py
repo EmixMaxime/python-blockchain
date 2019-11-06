@@ -30,3 +30,6 @@ def run():
     print("Les transaction : ", bc.current_transactions)
 
     return bc, network
+
+
+run()

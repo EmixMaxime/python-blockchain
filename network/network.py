@@ -9,7 +9,8 @@ class Network:
     def __init__(self, test=False):
         self.blockchain = None
 
-        if test is False:
+        if test == False:
+            print('Running network')
             self.node = Node("192.168.43.59", True)
 
             self.nodes = [Node("192.168.43.183"), Node(
