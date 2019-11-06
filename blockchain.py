@@ -157,7 +157,7 @@ class Blockchain():
             raise ValueError('block should be an instance of Block')
 
         # If I already have the block, I ignore the received one.
-        if block.index == self.last_block:
+        if block.index == self.last_block.index:
             print("I received a block, but I already have it, so I ignore it.")
             return False
 
