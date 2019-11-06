@@ -52,7 +52,7 @@ def test_chain_for_network():
 
 
 def test_valid_chain():
-    s = blockchain.chain_for_network
+    s = blockchain.chain
     valid = blockchain.valid_chain(s)
 
     assert valid == True
