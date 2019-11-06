@@ -72,6 +72,7 @@ class Block(object):
 
     @staticmethod
     def valid_block(block_to_validate, previous_block):
+        print('validating', block_to_validate.index, 'with prev_block', previous_block.index)
         previous_block_hash = Block.hash(previous_block)
 
         if block_to_validate.previous_hash != previous_block_hash:
@@ -84,6 +85,7 @@ class Block(object):
                   block_to_validate.nonce, ' prev_nonce=', previous_block.nonce)
             return False
 
+        print('Block valid')
         return True
 
     def check_sender_stock(self, tx, nb):
