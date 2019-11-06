@@ -8,7 +8,7 @@ class Network:
 
     def __init__(self, test=False):
         self.node = Node("192.168.43.183", True)
-        self.nodes = []
+        self.nodes = [Node("192.168.43.59"), Node("192.168.43.59"), Node("192.168.43.32")]
         self.blockchain = None
 
         if test is False:
@@ -37,15 +37,10 @@ class Network:
             self.node.send("-c ", nodeList, "")
 
     def _broadcast_ping(self): #Done
-        nodeBroadcast = Node("192.168.43.161") 
         myNodeToSend = jsonpickle.encode(self.node)
-        self.node.send("-p ", nodeBroadcast, myNodeToSend)
 
-        nodeBroadcast = Node("192.168.1.62")
-        self.node.send("-p ", nodeBroadcast, myNodeToSend)
-
-        nodeBroadcast = Node("192.168.1.62")
-        self.node.send("-p ", nodeBroadcast, myNodeToSend)
+        for nodeList in self.nodes:
+            self.node.send("-p ", nodeList, myNodeToSend)
 
     def receiv(self):
         print("ready to receiv")
