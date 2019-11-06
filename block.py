@@ -3,11 +3,10 @@ from time import time
 import hashlib
 
 MINING_DIFFICULTY = 2
-HASH_GENESIS_BLOCK = "2c1000ab01910992ffdc4cbd28c78698b11c63887caaf8b02e0959e83e11a8e3"
+HASH_GENESIS_BLOCK = "8f73145e22b5eef54041892ff92f7e1ab02d6c7246e76b81f0092a8adb13118e"
 
 
 class Block(object):
-
     def __init__(self, nonce, transactions, index, previous_hash):
         self.index = index
         self.nonce = nonce
@@ -86,3 +85,14 @@ class Block(object):
             return False
 
         return True
+
+    def check_sender_stock(self, tx, nb):
+        i = 1
+        while 1 > nb and i <= len(self.transactions):
+            if self.transactions[-i].value == tx.value:
+                if self.transactions[-i].sender_address == tx.sender_address:
+                    nb = nb - 1
+                elif self.transactions[-i].recipient_address == tx.sender_address:
+                    nb = nb + 1
+            i = i + 1
+        return nb

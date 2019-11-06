@@ -1,12 +1,15 @@
 from blockchain import Blockchain
 from wallet import Wallet
 from client import Client
+from init_transactions import hashImg
+from transaction import Transaction
+
+from init_datas import creator_address
 
 blockchain = Blockchain()
 
 wallet = Wallet()
 guy_wallet = Wallet(1024, True)
-
 
 def test_submit_transaction():
     transaction = Client.generate_transaction(
@@ -44,3 +47,20 @@ def test_valid_chain():
     valid = blockchain.valid_chain(s)
 
     assert valid == True
+
+def test_check_sender_stock():
+    testWallet = Wallet(testDatas=True)
+    appleHash = hashImg('./items/apple.png')
+
+    tx = Transaction(guy_wallet.address, creator_address, appleHash)
+    assert blockchain.check_sender_stock(tx) == False
+
+    txAB = Transaction(creator_address, guy_wallet.address, appleHash)
+    assert blockchain.check_sender_stock(txAB) == True
+
+    txBA = Transaction(guy_wallet.address, creator_address, appleHash)
+    assert blockchain.check_sender_stock(txBA) == False
+
+    txAB.sign(testWallet)
+    if blockchain.submit_transaction(txAB):
+        assert blockchain.check_sender_stock(txBA) == True
