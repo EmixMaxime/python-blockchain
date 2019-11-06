@@ -7,7 +7,7 @@ from network.node import Node
 class Network:
 
     def __init__(self, test=False):
-        self.node = Node("192.168.1.62", True)
+        self.node = Node("192.168.43.183", True)
         self.nodes = []
         self.blockchain = None
 
@@ -37,8 +37,14 @@ class Network:
             self.node.send("-c ", nodeList, "")
 
     def _broadcast_ping(self): #Done
-        nodeBroadcast = Node("192.168.1.62")
+        nodeBroadcast = Node("192.168.43.161") 
         myNodeToSend = jsonpickle.encode(self.node)
+        self.node.send("-p ", nodeBroadcast, myNodeToSend)
+
+        nodeBroadcast = Node("192.168.1.62")
+        self.node.send("-p ", nodeBroadcast, myNodeToSend)
+
+        nodeBroadcast = Node("192.168.1.62")
         self.node.send("-p ", nodeBroadcast, myNodeToSend)
 
     def receiv(self):
