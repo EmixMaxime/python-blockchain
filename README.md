@@ -1,5 +1,8 @@
 # Blockchain python
 Work in progress. This is a toy blockchain to learn.
+I'm not a blockchain professional, I'm pationate and I've decided to create and share this blockchain to give the possibility to you to learn about blockchain technology. At a first glance it may be scarry, but don't be! I'll explain everything I know with concrete examples.
+
+Let's learn!
 
 ## Requirements 
 - python 3.7+
