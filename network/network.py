@@ -6,16 +6,18 @@ from network.node import Node
 
 class Network:
 
-    def __init__(self):
-        self.node = Node("192.168.1.82", True)
-        self.nodes = []
+    def __init__(self, test=False):
         self.blockchain = None
 
-        # Thread management
-        self._running = True
-        self.t1 = threading.Thread(target=self.receiv)
-        self.t1.start()
-        self._broadcast_ping()
+        if test == False:
+            self.node = Node("192.168.43.183", True)
+
+            self.nodes = [Node("192.168.43.59"), Node("192.168.43.161"), Node("192.168.43.32")]
+            # Thread management
+            self._running = True
+            self.t1 = threading.Thread(target=self.receiv)
+            self.t1.start()
+            self._broadcast_ping()
 
     def stop(self):
         self._running = False
@@ -35,16 +37,16 @@ class Network:
         for nodeList in self.nodes:
             self.node.send("-c ", nodeList, "")
 
-    def _broadcast_ping(self): #Not use
-        nodeBroadcast = Node("192.168.1.62")
+    def _broadcast_ping(self):  # Done
         myNodeToSend = jsonpickle.encode(self.node)
-        self.node.send("-p ", nodeBroadcast, myNodeToSend)
+        for nodeList in self.nodes:
+            self.node.send("-p ", nodeList, myNodeToSend)
 
     def receiv(self):
         print("ready to receiv")
 
         while self._running is True:
-            data, addr = self.node.my_socket.recvfrom(4096)
+            data, addr = self.node.my_socket.recvfrom(65536)
 
             cureNode = addr
 
@@ -52,7 +54,8 @@ class Network:
 
             if myData[:3] == "-c ":  # Done
                 # Retourne le JSON de la chaine
-                self.node.send("-ac", cureNode, self.blockchain.chain_for_network)
+                self.node.send("-ac", cureNode,
+                               self.blockchain.chain_for_network)
 
             elif myData[:3] == "-n ":  # Done
                 print("I received a Node")
@@ -89,7 +92,7 @@ class Network:
                     notFind = False
 
             elif myData[:3] == "-ac":  # En suspend
-                some = None
+                self.blockchain.initialize_chain(myData[3:len(myData)])
 
             elif myData[:3] == "-ap":  # Done
                 nodeReceiv = jsonpickle.decode(myData[3:len(myData)])
@@ -103,5 +106,6 @@ class Network:
 
                 if notFind:
                     print("Connecting to a new Node: ", nodeReceiv.host)
+                    self.node.send("-c ", Node(addr[0]), "")
                     self.nodes.append(nodeReceiv)
                     notFind = False

@@ -1,5 +1,6 @@
 from transaction import Transaction
 
+
 def test_equality():
     sender = '@sender_addr'
     receiv = '@receiv_addr'
@@ -13,8 +14,10 @@ def test_equality():
     print(t1, t2)
     t3 = Transaction(sender, receiv, 55)
 
-    assert t1 == t2
+    # because we have timestamp uniq id
+    assert t1 != t2
     assert t1 != t3
+    assert t1 == t1
 
     assert t1 in transactions
     assert not t3 in transactions

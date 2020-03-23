@@ -63,7 +63,7 @@ class Blockchain():
         return jsonpickle.encode(self.chain)
 
     def check_sender_stock(self, tx):
-        #check sur le block en cours
+        # check sur le block en cours
         i = 1
         nb = 0
         while 1 > nb and i <= len(self.current_transactions):
@@ -74,8 +74,8 @@ class Blockchain():
                     nb = nb + 1
             i = i + 1
 
-        #check sur les anciens blocs
-        if len(self.chain) >= 1 :
+        # check sur les anciens blocs
+        if len(self.chain) >= 1:
             current_block = self.last_block
             i = current_block.index
             while 1 > nb and i >= 0:
@@ -94,9 +94,9 @@ class Blockchain():
         # from the network, is a str that contains a json.
         if isinstance(transaction, str):
             transaction = jsonpickle.decode(transaction)
-            print('I received a new Transaction', transaction)
+            print('I received a new Transaction', transaction, transaction.time)
         else:
-            print("I'm sending a new Transaction", transaction)
+            print("I'm sending a new Transaction", transaction, transaction.time)
 
         if transaction in self.current_transactions:
             print('I received an transaction, but I already know it, so I ignore it.')
@@ -106,18 +106,26 @@ class Blockchain():
             raise ValueError(
                 'transaction parameter should be a Transaction instance.')
 
-        transaction_verification = transaction.verify_signature() and self.check_sender_stock(transaction)
+        is_signature_valid = transaction.verify_signature()
+        is_stock_valid = self.check_sender_stock(transaction)
 
-        if transaction_verification:
-            print("Transaction signature is valid")
+        if not is_signature_valid:
+            print("Transaction signature is invalid")
+        
+        if not is_stock_valid:
+            print("Transaction is impossible because stock invalid")
+
+        if is_stock_valid and is_signature_valid:
             self.current_transactions.append(transaction)
             self.network.broadcast_transaction(jsonpickle.encode(transaction))
+
             # Should I mine?
-            # if len(self.current_transactions) == NB_TRANSACTIONS_MAX:
-                # self.mine()
+            if len(self.current_transactions) == NB_TRANSACTIONS_MAX:
+                self.mine()
+            
             return len(self.chain)
 
-        print("Transaction signature is invalid")
+        print("Transaction is invalid")
         return False
 
     def create_block(self, nonce, previous_hash):
@@ -129,25 +137,29 @@ class Blockchain():
         """
 
         # Why we have this OR condition? Seems useless.
-        block = Block(nonce, self.current_transactions, len(self.chain), 
-                        previous_hash or Block.hash(self.chain[-1]))
+        block = Block(nonce, self.current_transactions, len(self.chain),
+                      previous_hash or Block.hash(self.chain[-1]))
 
         # Reset the current list of transactions
         self.current_transactions = []
 
-        self.chain.append(block)
-        self.network.broadcast_block(jsonpickle.encode(block))
+        self.submit_block(block)
 
         return block
 
     def submit_block(self, block):
-        print('handling block: ', block)
 
         if isinstance(block, str):
             block = jsonpickle.decode(block)
+            print("I received a new Block", block, "prev hash:", block.previous_hash)
 
         if not isinstance(block, Block):
             raise ValueError('block should be an instance of Block')
+
+        # If I already have the block, I ignore the received one.
+        if block.index == self.last_block.index:
+            print("I received a block, but I already have it, so I ignore it.")
+            return False
 
         """
         Add a Block in the Blockchain if the Block signature is valid.
@@ -159,6 +171,12 @@ class Blockchain():
 
         self.chain.append(block)
 
+        # Idk If I have to do this, but... :)
+        self.current_transactions = []
+
+        print("I'm sending a block", block)
+        self.network.broadcast_block(jsonpickle.encode(block))
+
         return True
 
     def valid_chain(self, chain):
@@ -167,8 +185,6 @@ class Blockchain():
         :param chain: A blockchain
         :return: True if valid, False if not
         """
-
-        chain = jsonpickle.decode(chain)
 
         previous_block = chain[0]
 
@@ -186,6 +202,24 @@ class Blockchain():
             current_index += 1
 
         return True
+
+    def initialize_chain(self, chain_from_network):
+        """
+        When I'm a new Node on the Network, I have to initialize my chain.
+        To do this, I ask the network the chain and initialize mine with this chain.
+        We should to something like a concensus (the largest chain win), but it's not done yet.
+        """
+        chain = jsonpickle.decode(chain_from_network)
+
+        # I keep my chain because its larger.
+        if len(chain) < len(self.chain):
+            False
+
+        if self.valid_chain(chain):
+            print("Initialize chain: I'm taking the chain:", chain)
+            self.chain = chain
+        else:
+            print('Intialize chain impossible because the chain is not valid.')
 
     def mine(self):
         """
@@ -212,9 +246,11 @@ class Blockchain():
         response = {
             'message': "New Block Forged",
             'index': block.index,
-            'transactions': block.transactions,
+            # 'transactions': block.transactions,
             'nonce': block.nonce,
-            'previous_hash': block.previous_hash,
+            # 'previous_hash': block.previous_hash,
         }
+
+        print(response)
 
         return response

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+    <title>My blockchain</title>
+</head>
+
+<body class="flex items-center justify-center">
+    <div class="container">
+        <table class="w-full flex flex-row flex-no-wrap sm:bg-white rounded-lg overflow-hidden sm:shadow-lg my-5">
+            <thead class="text-white">
+                {% for block in chain %}
+                <tr
+                    class="bg-teal-400 flex flex-col flex-no wrap sm:table-row rounded-l-lg sm:rounded-none mb-2 sm:mb-0">
+                    <th class="p-3 text-left">Creation time</th>
+                    <th class="p-3 text-left">Previous hash</th>
+                    <th class="p-3 text-left" width="110px">Number of transactions</th>
+                    <th>transactions</th>
+                </tr>
+                {% endfor %}
+            </thead>
+            <tbody class="flex-1 sm:flex-none">
+                {% for block in chain %}
+                <tr class="flex flex-col flex-no wrap sm:table-row mb-2 sm:mb-0">
+                    <td class="border-grey-light border hover:bg-gray-100 p-3">{{ block.timestamp }}</td>
+                    <td class="border-grey-light border hover:bg-gray-100 p-3 truncate">{{ block.previous_hash }}</td>
+                    <td class="border-grey-light border hover:bg-gray-100 p-3 truncate">
+                        {{ block.transactions | length }}</td>
+
+                    <td>
+                        {% for transaction in block.transactions %}
+                        {{ transaction.value }} - {{ transaction }}
+                        {% endfor %}
+                    </td>
+                    <!-- <td
+                        class="border-grey-light border hover:bg-gray-100 p-3 text-blue-400 hover:text-blue-600 hover:font-medium cursor-pointer">
+                        See more</td> -->
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- current transactions -->
+        <table class="w-full flex flex-row flex-no-wrap sm:bg-white rounded-lg overflow-hidden sm:shadow-lg my-5">
+        </table>
+    </div>
+</body>
+
+<style>
+    html,
+    body {
+        height: 100%;
+    }
+
+    @media (min-width: 640px) {
+        table {
+            display: inline-table !important;
+        }
+
+        thead tr:not(:first-child) {
+            display: none;
+        }
+    }
+
+    td:not(:last-child) {
+        border-bottom: 0;
+    }
+
+    th:not(:last-child) {
+        border-bottom: 2px solid rgba(0, 0, 0, .1);
+    }
+</style>
+
+</html>

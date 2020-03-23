@@ -1,15 +1,24 @@
+from init_datas import creator_address
 from blockchain import Blockchain
 from wallet import Wallet
 from client import Client
 from init_transactions import hashImg
 from transaction import Transaction
+from block import Block, HASH_GENESIS_BLOCK
+from network.network import Network
 
-from init_datas import creator_address
+network = Network(test=True)
 
-blockchain = Blockchain()
+
+blockchain = Blockchain(network)
 
 wallet = Wallet()
 guy_wallet = Wallet(1024, True)
+
+
+def test_genesis_block():
+    assert Block.hash(blockchain.chain[0]) == HASH_GENESIS_BLOCK
+
 
 def test_submit_transaction():
     transaction = Client.generate_transaction(
@@ -43,10 +52,11 @@ def test_chain_for_network():
 
 
 def test_valid_chain():
-    s = blockchain.chain_for_network
+    s = blockchain.chain
     valid = blockchain.valid_chain(s)
 
     assert valid == True
+
 
 def test_check_sender_stock():
     testWallet = Wallet(testDatas=True)

@@ -1,21 +1,36 @@
 from blockchain_factory import blockchain_factory
 from wallet import Wallet
 from transaction import Transaction
+from init_transactions import hashImg
 import time
 
 
-bc, network = blockchain_factory()
+def run():
+    appleHash = hashImg('./items/apple.png')
 
-time.sleep(5)
+    bc, network = blockchain_factory()
 
-wallet = Wallet()
-wallet2 = Wallet(1024, True)
-transaction = Transaction(wallet.address, wallet2.address, "bonjour")
-transaction2 = Transaction(wallet.address, wallet2.address, "bonjour2")
-transaction3 = Transaction(wallet.address, wallet2.address, "bonjour3")
+    time.sleep(5)
 
-transaction.sign(wallet)
+    wallet = Wallet(testDatas=True)
+    wallet2 = Wallet(testDatas=True)
 
-bc.submit_transaction(transaction)
-bc.submit_transaction(transaction2)
-bc.submit_transaction(transaction3)
+    transaction = Transaction(wallet.address, wallet2.address, appleHash)
+    transaction2 = Transaction(wallet.address, wallet2.address, appleHash)
+    transaction3 = Transaction(wallet.address, wallet2.address, appleHash)
+
+    transaction.sign(wallet)
+    transaction2.sign(wallet)
+    transaction3.sign(wallet)
+
+    bc.submit_transaction(transaction)
+    bc.submit_transaction(transaction2)
+    bc.submit_transaction(transaction3)
+
+    print("Les transaction : ", bc.current_transactions)
+
+    return bc, network
+
+
+if __name__ == '__main__':
+    run()
